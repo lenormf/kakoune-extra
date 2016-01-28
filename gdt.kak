@@ -12,6 +12,7 @@ addhl -group /gdt regex TODO|FIXME|XXX 0:default+rb
 # Assign the "gdt" highlighter to each language's comments highlighter
 %sh{
     LANGS=(
+        c
         cabal
         coffee
         cpp
