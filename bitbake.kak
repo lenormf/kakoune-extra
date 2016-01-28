@@ -1,0 +1,66 @@
+##
+## bitbake.kak by lenormf
+##
+
+# http://www.yoctoproject.org/docs/1.8/bitbake-user-manual/bitbake-user-manual.html
+# ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+
+# Detection
+# ‾‾‾‾‾‾‾‾‾
+
+hook global BufCreate .*/?.+\.bb(class|append)? %{
+    set buffer filetype bitbake
+}
+
+hook global WinSetOption mimetype=text/x-(python|shellscript) %{
+    %sh{
+        ## If the file is detected as a python or shell script, reset the filetype
+        ## This occurs because bitbake files can contain inline shell or python functions
+        grep -qiw "${kak_bufname##*.}" <<< "bb bbclass bbappend" && echo "set buffer filetype bitbake"
+    }
+}
+
+# Highlighters
+# ‾‾‾‾‾‾‾‾‾‾‾‾
+
+addhl -group / regions -default code bitbake \
+    double_string  %{(?<!\\)(\\\\)*\K"} %{(?<!\\)(\\\\)*"} '' \
+    single_string %{(?<!\\)(\\\\)*\K'} %{'} '' \
+    comment '(?<!\$)#' '$' '' \
+    python_inline '\$\{@' \} '' \
+    python_bb '^\h*python(\h+\w+)?\h*\(\h*\)\h*\{' \} '' \
+    python_native '^def\h+\w+\([^)]*\)\h*:' '^(?=[^\h])' '' \
+    shell_bb '^\h*[\w${}]+\h*\([^)]*\)\h\{' \} \{
+
+addhl -group /bitbake/python_inline ref python
+addhl -group /bitbake/python_bb ref python
+addhl -group /bitbake/python_native ref python
+addhl -group /bitbake/python_bb regex '^\h*(python)(\h+\w+)?\h*\(\h*\)\h*\{' 1:green+b
+
+addhl -group /bitbake/shell_bb ref sh
+addhl -group /bitbake/double_string ref sh/double_string
+addhl -group /bitbake/single_string ref sh/single_string
+addhl -group /bitbake/comment ref sh/comment
+
+addhl -group /bitbake/code regex \${?(ASSUME_PROVIDED|B|BB_ALLOWED_NETWORKS|BBCLASSEXTEND|BB_CONSOLELOG|BB_CURRENTTASK|BB_DANGLINGAPPENDS_WARNONLY|BBDEBUG|BB_DEFAULT_TASK|BB_DISKMON_DIRS|BB_DISKMON_WARNINTERVAL|BB_ENV_EXTRAWHITE|BB_ENV_WHITELIST|BB_FETCH_PREMIRRORONLY|BBFILE_COLLECTIONS|BB_FILENAME|BBFILE_PATTERN|BBFILE_PRIORITY|BBFILES|BB_GENERATE_MIRROR_TARBALLS)}? 0:value
+addhl -group /bitbake/code regex \${?(BB_HASHBASE_WHITELIST|BB_HASHCHECK_FUNCTION|BB_HASHCONFIG_WHITELIST|BBINCLUDED|BBINCLUDELOGS|BBINCLUDELOGS_LINES|BB_INVALIDCONF|BBLAYERS|BBLAYERS_FETCH_DIR|BB_LOGFMT|BBMASK|BB_NICE_LEVEL|BB_NO_NETWORK|BB_NUMBER_PARSE_THREADS|BB_NUMBER_THREADS|BB_ORIGENV|BBPATH|BB_PRESERVE_ENV|BB_RUNFMT|BB_RUNTASK)}? 0:value
+addhl -group /bitbake/code regex \${?(BB_SCHEDULER|BB_SCHEDULERS|BBSERVER|BB_SETSCENE_DEPVALID|BB_SETSCENE_VERIFY_FUNCTION|BB_SIGNATURE_EXCLUDE_FLAGS|BB_SIGNATURE_HANDLER|BB_SRCREV_POLICY|BB_STAMP_POLICY|BB_STAMP_WHITELIST|BB_STRICT_CHECKSUM|BB_TASKHASH|BB_TASK_NICE_LEVEL|BB_VERBOSE_LOGS|BBVERSIONS|BB_WORKERCONTEXT|BITBAKE_UI|BUILDNAME|BZRDIR|C)}? 0:value
+addhl -group /bitbake/code regex \${?(CACHE|CVSDIR|D|DEFAULT_PREFERENCE|DEPENDS|DESCRIPTION|DL_DIR|E|EXCLUDE_FROM_WORLD|F|FAKEROOT|FAKEROOTBASEENV|FAKEROOTCMD|FAKEROOTDIRS|FAKEROOTENV|FAKEROOTNOENV|FETCHCMD|FILE|FILESDIR|FILESPATH)}? 0:value
+addhl -group /bitbake/code regex \${?(G|GITDIR|H|HGDIR|HOMEPAGE|I|INHERIT|L|LAYERDEPENDS|LAYERDIR|LAYERVERSION|LICENSE|M|MIRRORS|MULTI_PROVIDER_WHITELIST|O|OVERRIDES|P|PACKAGES|PACKAGES_DYNAMIC|)}? 0:value
+addhl -group /bitbake/code regex \${?(PE|PERSISTENT_DIR|PF|PN|PR|PREFERRED_PROVIDER|PREFERRED_PROVIDERS|PREFERRED_VERSION|PREMIRRORS|PROVIDES|PRSERV_HOST|PV|R|RDEPENDS|RPROVIDES|RRECOMMENDS|S|SECTION|SRCDATE|SRCREV|)}? 0:value
+addhl -group /bitbake/code regex \${?(SRCREV_FORMAT|SRC_URI|STAMP|STAMPCLEAN|SUMMARY|SVNDIR|T|TOPDIR)}? 0:value
+
+addhl -group /bitbake/code regex \<inherit|include|require|addtask|deltask|export|addhandler\> 0:keyword
+
+# Commands
+# ‾‾‾‾‾‾‾‾
+
+# Initialization
+# ‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+
+hook global WinSetOption filetype=bitbake %{
+    addhl ref bitbake
+}
+hook global WinSetOption filetype=(?!bitbake).* %{
+    rmhl bitbake
+}
