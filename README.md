@@ -21,6 +21,20 @@ loaded everytime a new `kak` process is started.
 If you want to be able to update the scripts easily, clone this repository and create symbolic links to the scripts
 you want to have loaded automatically in the system/user rc directory (c.f. previous points).
 
+## Categories
+
+The scripts that are in the root directory of the repository are general purpose, while the following categories
+hold scripts with particular uses.
+
+### Widgets
+
+Placed in the `widgets` directory, those scripts store information in variables whose prefix is `modeline-`. As
+their name suggest, they are aimed at being used in the `modelinefmt` variable, and hold specific information.
+
+Example: the `percent` widget will update the `modeline-pos-percent` option with the relative position of the cursor
+in the buffer (using a percentage). You can use it by either inserting `%opt{modeline-pos-percent}%` variable
+in `modelinefmt`.
+
 ## Contributing
 
 Feel free to create a pull request if you want to share a useful script.
