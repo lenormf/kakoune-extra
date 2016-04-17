@@ -1,3 +1,9 @@
+##
+## curfunc.kak by lenormf
+## Save the name of the function in which the cursor is currently located
+##
+
+## Name of the function
 decl str modeline_cur_function
 
 def -hidden curfunc-update %{
@@ -5,7 +11,6 @@ def -hidden curfunc-update %{
 
     eval -draft -save-regs m %{
         reg m %val{cursor_line}
-echo -debug %reg{m}
 
         try %{
             exec <a-?>^#\s*include<ret>J
@@ -50,6 +55,7 @@ echo -debug %reg{m}
     }
 }
 
+## Only update the variable on languages supported by clang
 hook global WinCreate .* %{ %sh{
     case "${kak_opt_filetype}" in
         c|cpp|objc) echo 'hook window NormalIdle .* %{ curfunc-update }';;
