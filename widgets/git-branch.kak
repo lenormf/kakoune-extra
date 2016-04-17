@@ -4,13 +4,13 @@
 ##
 
 ## current git branch
-decl str modeline-git-branch
+decl str modeline_git_branch
 
 hook global WinCreate .* %{
     hook window NormalIdle .* %{ %sh{
         branch=$(cd $(readlink -e $(dirname ${kak_bufname})) && git rev-parse --abbrev-ref HEAD 2>/dev/null)
         if [ -n "${branch}" ]; then
-            echo "set window modeline-git-branch '${branch}'"
+            echo "set window modeline_git_branch '${branch}'"
         fi
     } }
 }
