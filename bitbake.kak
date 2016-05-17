@@ -16,7 +16,9 @@ hook global WinSetOption mimetype=text/x-(python|shellscript) %{
     %sh{
         ## If the file is detected as a python or shell script, reset the filetype
         ## This occurs because bitbake files can contain inline shell or python functions
-        grep -qiw "${kak_bufname##*.}" <<< "bb bbclass bbappend" && echo "set buffer filetype bitbake"
+        if echo "bb bbclass bbappend" | grep -qiw "${kak_bufname##*.}"; then
+            echo "set buffer filetype bitbake"
+        fi
     }
 }
 
