@@ -83,7 +83,7 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
             _echo "exec 'S${pattern}<ret>'"
             if [ -n "${index}" ]; then
                 ## a particular group has to be selected
-                _echo "exec -save-regs ^ '${index}\\' '"
+                _echo "exec '${index}\\' '"
             fi
         fi
 
