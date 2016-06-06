@@ -52,7 +52,7 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
         _echo "eval -draft -save-regs '/\"|^@m' %{"
 
         ## ignore leading whitespace to keep the indentation
-        _echo 'try %{ exec <a-s>1s^\s*(.+)<ret> }'
+        _echo 'try %{ exec <a-s>1s^\s*([^\n]+)<ret> }'
 
         ## trim multiple whitespace that might come from previous indentation
         ## we assume that a single whitespace character was placed intentionally
@@ -73,22 +73,21 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
             ## select the parts we want to align
             if [ -z "${index}" ]; then
                 ## no index was passed, select all we can
-                _echo "exec s${pattern}<ret>"
+                _echo "exec 's${pattern}<ret>'"
             else
                 ## a particular group has to be selected, just use the search command
-                _echo "exec <a-:><a-\;>\;${index}/${pattern}<ret>"
+                _echo "exec '<a-;>;${index}/${pattern}<ret>'"
             fi
         else
             ## split to get the parts we want to align
-            if [ -z "${index}" ]; then
-                ## no index was passed, perform a regular split
-                _echo "exec S${pattern}<ret>"
-            else
-                ## FIXME
+            _echo "exec 'S${pattern}<ret>'"
+            if [ -n "${index}" ]; then
                 ## a particular group has to be selected
-                echo -n
+                _echo "exec -save-regs ^ '${index}\\' '"
             fi
         fi
+
+        _echo '} catch %{ echo -color Error Nothing to select }'
 
         _echo "%sh{
             if [ -n \"\${kak_reg_m}\" ]; then
@@ -99,12 +98,11 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
         }"
 
         _echo '}'
-        _echo '}'
-
-        _echo 'try %{'
 
         ## restore the selections captured in the draft
-        _echo "select \"%reg{m}\""
+        _echo 'try %{
+            select "%reg{m}"
+        } catch %{ echo -color Error Unable to restore the selections }'
 
         ## make sure the cursor is placed after the anchor
         ## swap the two if we want to align to the left
@@ -116,7 +114,6 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
         ## align
         _echo 'exec &'
 
-        _echo '}'
         _echo '}'
     done
 } }
