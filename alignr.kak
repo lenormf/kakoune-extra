@@ -17,7 +17,6 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
         exit 1
     }
 
-{
     for pattern in "$@"; do
         if [ ${#pattern} -lt 2 ]; then
             fatal "Invalid pattern length (${#pattern}, expected at least 3)"
@@ -116,5 +115,4 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
 
         _echo '}'
     done
-}>&1
 } }
