@@ -4,6 +4,9 @@ This repository contains several scripts for the [kakoune]("https://github.com/m
 that were not elligible to be merged with the core scripts that kakoune ships with, but still implement
 useful experimental features or allow highlighting of custom file formats.
 
+Scripts are all fairly well commented, but those whose use require more than a quick sentence in an inlined
+comment have their own `.asciidoc` documentation file (e.g. `fzf.asciidoc`).
+
 ## How to use the scripts
 
 ### System wide availability
@@ -33,7 +36,7 @@ their name suggest, they are aimed at being used in the `modelinefmt` variable, 
 
 Example: the `percent` widget will update the `modeline-pos-percent` option with the relative position of the cursor
 in the buffer (using a percentage). You can use it by either inserting `%opt{modeline-pos-percent}%` variable
-in `modelinefmt`.
+in `modelinefmt`, or directly in a script or yours.
 
 ## Contributing
 
