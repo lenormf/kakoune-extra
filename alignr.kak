@@ -17,6 +17,7 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
         exit 1
     }
 
+{
     for pattern in "$@"; do
         if [ ${#pattern} -lt 2 ]; then
             fatal "Invalid pattern length (${#pattern}, expected at least 3)"
@@ -69,26 +70,17 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
 
         _echo 'try %{'
 
-        if [ "${action}" = s ]; then
+        if [ "${action}" = s ] || [ "${action}" = S ]; then
             ## select the parts we want to align
-            if [ -z "${index}" ]; then
-                ## no index was passed, select all we can
-                _echo "exec 's${pattern}<ret>'"
-            else
-                ## a particular group has to be selected, just use the search command
-                _echo "exec '<a-;>;${index}/${pattern}<ret>'"
-            fi
-        else
-            ## split to get the parts we want to align
-            _echo "exec 'S${pattern}<ret>'"
+            _echo "exec '${action}${pattern}<ret>'"
+
             if [ -n "${index}" ]; then
                 ## a particular group has to be selected
                 _echo "exec '${index}\\' '"
             fi
         fi
 
-        _echo '} catch %{ echo -color Error Nothing to select }'
-
+        ## save the selections to apply them after the parent draft
         _echo "%sh{
             if [ -n \"\${kak_reg_m}\" ]; then
                 echo 'reg m \"%reg{m}:%val{selections_desc}\"'
@@ -99,21 +91,30 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
 
         _echo '}'
 
-        ## restore the selections captured in the draft
-        _echo 'try %{
-            select "%reg{m}"
-        } catch %{ echo -color Error Unable to restore the selections }'
+        _echo '}'
 
-        ## make sure the cursor is placed after the anchor
-        ## swap the two if we want to align to the left
-        _echo 'exec <a-:>'
-        if [ "${align}" = '<' ]; then
-            _echo 'exec <a-\;>'
-        fi
+        ## make sure that we have selections to align, and align them
+        _echo "%sh{
+            if [ -n \"\${kak_reg_m}\" ]; then
+                echo 'try %{
+                    ## restore the selections captured in the draft
+                    select \"%reg{m}\"
+                    ## make sure the anchor is set prior to the cursor
+                    exec <a-:>
+                '
 
-        ## align
-        _echo 'exec &'
+                if [ \"${align}\" = '<' ]; then
+                    echo 'exec <a-\\;>'
+                fi
+
+                ## make sure the cursor is placed after the anchor
+                ## swap the two if we want to align to the left
+                echo 'exec &
+                }'
+            fi
+        }"
 
         _echo '}'
     done
+}>&1
 } }
