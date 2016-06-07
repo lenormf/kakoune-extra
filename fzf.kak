@@ -14,8 +14,12 @@
             decl str fzf_options '-m'
 
             def -params .. -file-completion fzf-open -docstring 'Open a file using the fzf utility' %{ %sh{
-                cwd=\$(dirname \"\${kak_buffile}\" | sed 's/\\//\\\\\\//g')
-                filesearch_cmd=\$(printf '%s\\n' \"\${kak_opt_fzf_filesearch_cmd}\" | sed \"s/%s/\${@:-\${cwd}}/g\")
+                if [ \$# -ge 1 ]; then
+                    cwd=\$(printf '%s\\n' \"\$@\" | sed 's/\\//\\\\\\//g')
+                else
+                    cwd=\$(dirname \"\${kak_buffile}\" | sed 's/\\//\\\\\\//g')
+                fi
+                filesearch_cmd=\$(printf '%s\\n' \"\${kak_opt_fzf_filesearch_cmd}\" | sed \"s/%s/\${cwd}/g\")
                 eval \"\${filesearch_cmd}\" | fzf-tmux \${kak_opt_fzf_options} | while read path; do
                     printf %s\\\\n \"eval -try-client '\${kak_client}' %{edit '\${path}'}\" | kak -p \${kak_session}
                 done
