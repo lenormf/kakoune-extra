@@ -4,7 +4,7 @@
 ##
 
 ## <|>?: align direction (left, right, default left)
-## w?: remove all whitespace from the selections prior to aligning (default no)
+## w|W?: remove all whitespace from the selections prior to aligning (before selecting, after selecting, default none)
 ## \d?: index of the selection group or splitted group to keep
 ## s|S: selection method (select, split)
 ## …: pattern
@@ -23,15 +23,15 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
         fi
 
         ## parse the current argument
-        align=$(expr "${pattern}" : '\(.\)')
-        if ! echo '<>' | grep -q "${align}"; then
+        align=$(expr "${pattern}" : '\([<>]\)')
+        if [ -z "${align}" ]; then
             align='<'
         else
             pattern="${pattern#${align}}"
         fi
 
-        trim_whitespace=$(expr "${pattern}" : '\(.\)')
-        if ! echo 'w' | grep -q "${trim_whitespace}"; then
+        trim_whitespace=$(expr "${pattern}" : '\([wW]\)')
+        if [ -z "${trim_whitespace}" ]; then
             trim_whitespace=''
         else
             pattern="${pattern#${trim_whitespace}}"
@@ -42,8 +42,8 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
             pattern="${pattern#${index}}"
         fi
 
-        action=$(expr "${pattern}" : '\(.\)')
-        if ! echo 'sS' | grep -q "${action}"; then
+        action=$(expr "${pattern}" : '\([sS]\)')
+        if [ -z "${action}" ]; then
             fatal "Invalid action '${action}', expected 's' or 'S'"
         else
             pattern=$(_echo "${pattern#${action}}" | sed -e 's/</<lt>/g' -e 's/;/\;/g')
@@ -54,11 +54,9 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
         ## ignore leading whitespace to keep the indentation
         _echo 'try %{ exec <a-s>1s^\s*([^\n]+)<ret> }'
 
-        ## trim multiple whitespace that might come from previous indentation
-        ## we assume that a single whitespace character was placed intentionally
-        ## and has to be kept
-        if [ -n "${trim_whitespace}" ]; then
-            _echo 'try %{ exec -draft 1s\s(\s+)<ret>d }'
+        ## trim multiple whitespace that might come from a previous indentation
+        if [ "${trim_whitespace}" = 'w' ]; then
+            _echo 'try %{ exec -draft s\s+<ret>d }'
         fi
 
         ## empty out the selections register before use
@@ -77,6 +75,11 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
                 ## a particular group has to be selected
                 _echo "exec '${index}\\' '"
             fi
+        fi
+
+        ## trim multiple whitespace that might come from a previous indentation
+        if [ "${trim_whitespace}" = 'W' ]; then
+            _echo 'try %{ exec -draft s\s+<ret>d }'
         fi
 
         ## save the selections to apply them after the parent draft
