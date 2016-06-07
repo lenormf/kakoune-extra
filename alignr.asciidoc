@@ -71,6 +71,28 @@ char   path[512]; // Path to a file
 double d = 0x2A;
 ```
 
+**Example 3**
+
+_Data_:
+```
+int n; // simple declaration
+char *s = "helo"; // pointer declaration
+timer_t t;
+struct foo_s const *f = NULL; // more complicated declaration
+timer_t const *pt;
+```
+
+_Command_: `%:alignr 1s\w+\s*[=\;] 1s/`
+
+_Result_:
+```
+int                 n;          // simple declaration
+char *              s = "helo"; // pointer declaration
+timer_t             t;
+struct foo_s const *f = NULL;   // more complicated declaration
+timer_t const *     pt;
+```
+
 Structure initializations
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 

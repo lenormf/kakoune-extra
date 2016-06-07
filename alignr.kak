@@ -95,10 +95,10 @@ def -params 1.. alignr -docstring 'Align the current selection according to comm
         ## make sure that we have selections to align, and align them
         _echo "%sh{
             if [ -n \"\${kak_reg_m}\" ]; then
+                ## restore the selections captured in the draft
+                ## and make sure the anchor is set prior to the cursor
                 echo 'try %{
-                    ## restore the selections captured in the draft
                     select \"%reg{m}\"
-                    ## make sure the anchor is set prior to the cursor
                     exec <a-:>
                 '
 
