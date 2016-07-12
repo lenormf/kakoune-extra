@@ -43,8 +43,7 @@ char path[512];
 double d = 0x2A;
 ```
 
-_Command_: `%:alignr 1s\s`
-Alternative (use an actual space character): `%:alignr '1s '`
+_Command_: `%:alignr 2S\h`
 
 _Result_:
 ```
@@ -62,7 +61,7 @@ char path[512]; // Path to a file
 double d = 0x2A;
 ```
 
-_Command_: `%:alignr 1s\s s/[*/]`
+_Command_: `%:alignr 2S\h 1s/`
 
 _Result_:
 ```
@@ -151,3 +150,6 @@ _Result_:
 { NULL          , -1    , 0 },
 ```
 
+1 2 3
+abc def ghi
+45 67 89
