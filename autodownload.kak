@@ -20,14 +20,14 @@ set global autodownload_format %opt{autodownload_format_wget}
 
 hook global BufNew .* %{
     %sh{
-        readonly netproto_url="${kak_hook_param}"
+        readonly netproto_url="${kak_bufname}"
         readonly netproto_proto="${netproto_url%:*}"
 
         ## Check that the downloader used is reachable from this shell
-        type "${kak_opt_autodownload_format%% *}" &>/dev/null || exit
+        type "${kak_opt_autodownload_format%% *}" 2>&1 >/dev/null || exit
 
         ## Check that a url was passed to kakoune
-        [[ "${netproto_url}" =~ [a-zA-Z0-9]+://.+ ]] || exit
+        [[ "${netproto_url}" =~ ^[a-zA-Z0-9]+://.+ ]] || exit
 
         ## Create a temporary directory in which we will download the file
         readonly path_dir_tmp=$(mktemp -d -t kak-proto.XXXXXXXX)
@@ -50,19 +50,20 @@ hook global BufNew .* %{
 		## Start downloading the file to a temporary directory
 		## When the download has finished, remove the pipe to notify the hook below that the file can be loaded
         (
-            download_str=$(sed "s/{url}/${netproto_url//\//\\\/}/g; \
-                                s/{progress}/${netproto_fifo//\//\\\/}/g; \
-                                s/{output}/${netproto_buffer//\//\\\/}/g" <<< "${kak_opt_autodownload_format}")
-            eval "${download_str}"
+            download_str=$(printf %s "${kak_opt_autodownload_format}" | \
+                               sed -e "s/{url}/${netproto_url//\//\\\/}/g" \
+                                   -e "s/{progress}/${netproto_fifo//\//\\\/}/g" \
+                                   -e "s/{output}/${netproto_buffer//\//\\\/}/g")
+            eval "${download_str}" &
             rm -f "${netproto_fifo}"
-        ) &>/dev/null </dev/null &
+        ) 2>&1 >/dev/null </dev/null &
 
 		## Open a new buffer who will read and print the download's progress
 		## Remove the original buffer that was named after the URL of the file to fetch
 		## When the file has been downloaded, create its own buffer and remove temporary files
 		## If the user doesn't want to have the download progress kept in its own buffer after
 		## the download has finished, we remove that buffer
-        echo "
+        printf %s "
             eval %{
                 edit! -fifo '${netproto_fifo}' -scroll 'download:${netproto_url}'
                 delbuf! '${netproto_url}'
@@ -72,7 +73,7 @@ hook global BufNew .* %{
                     %sh{
                         rm -rf '${path_dir_tmp}'
                         if [ '${kak_opt_autodownload_keep_log,,}' != true ]; then
-                            echo '
+                            printf %s '
                                 delbuf! download:${netproto_url}
                                 buffer ${buffer_basename}
                             '
