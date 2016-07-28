@@ -7,9 +7,9 @@
 decl str modeline_focus
 
 hook global FocusIn .* %{ %sh{
-    printf %s "set window modeline_focus ''"
+    printf %s "set window modeline_focus '{StatusCursor}[*]{StatusLine}'"
 } }
 
 hook global FocusOut .* %{ %sh{
-    printf %s "set window modeline_focus '{StatusCursor}blurred{StatusLine}'"
+    printf %s "set window modeline_focus ''"
 } }
