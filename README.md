@@ -41,3 +41,7 @@ in `modelinefmt`, or directly in a script or yours.
 ## Contributing
 
 Feel free to create a pull request if you want to share a useful script.
+
+## License
+
+All the scripts in this repository are UNLICENSE'd.
