@@ -26,12 +26,10 @@ def -hidden _line_indent_modifier %{ %sh{
 } }
 
 # Print a message and wait for a key to be hit
-def -hidden _line_indent %{ eval -save-regs m %{
+# After calling the function, the following modifiers can be used:
+# '-': align with the previous non-empty line
+# '+': align with the next non-empty line
+def line_indent %{ eval -save-regs m %{
     echo -color Information 'Hit either "-" or "+" to align the current line, cancel with any other key'
     onkey m _line_indent_modifier
 } }
-
-# After hitting `=`, the following modifiers can be used:
-# '-': align with the previous non-empty line
-# '+': align with the next non-empty line
-map global normal = :_line_indent<ret>
