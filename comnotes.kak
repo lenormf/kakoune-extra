@@ -12,7 +12,7 @@ addhl -group /comnotes regex TODO|FIXME|XXX|NOTE 0:default+rb
 ##      a regex to highlight them, thus keywords in those files can't be highlighted
 %sh{
     LANGS="c:cabal:coffee:cpp:css:cucumber"
-    LANGS="${LANGS}:dlang:dockerfile:fish:golang:haml:haskell:html:ini"
+    LANGS="${LANGS}:d:dockerfile:fish:go:haml:haskell:html:ini"
     LANGS="${LANGS}:java:javascript:julia:kakrc:kickstart:latex:lisp:lua"
     LANGS="${LANGS}:makefile:moon:objc:perl:pug:python:ragel:ruby:rust:sass:scala:sh:swift"
     LANGS="${LANGS}:tupfile:yaml"
