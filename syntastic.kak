@@ -5,7 +5,9 @@
 
 decl bool syntastic_autoformat no
 
-def -hidden -params 3 _syntastic-declare-linter-formatter %{ %sh{
+def -params 2..3 \
+    -docstring %{syntastic-declare-filetype <filetype> <lintcmd> <formatcmd>: automatically lint and/or format buffers on write} \
+    syntastic-declare-filetype %{ %sh{
     readonly filetype="$1"
 
     printf 'hook global WinSetOption filetype=%s %%{\n' "${filetype}"
@@ -13,7 +15,7 @@ def -hidden -params 3 _syntastic-declare-linter-formatter %{ %sh{
     if [ "${kak_opt_syntastic_autoformat}" = "true" ]; then
         echo 'hook buffer BufWritePre %val{buffile} %{'
 
-        if [ -n "$3" ]; then
+        if [ $# -gt 2 ] && [ -n "$3" ]; then
             printf '%%sh{
                 if [ -z "${kak_opt_formatcmd}" ]; then
                     printf "set buffer formatcmd \\"%%s\\"\\\\n" "%s"
@@ -40,29 +42,28 @@ def -hidden -params 3 _syntastic-declare-linter-formatter %{ %sh{
     echo 'lint } }'
 } }
 
-_syntastic-declare-linter-formatter "c" \
+syntastic-declare-filetype "c" \
     "cppcheck --language=c --enable=all --template='{file}:{line}:1: {severity}: {message}' 2>&1" \
     "clang-format"
 
-_syntastic-declare-linter-formatter "cpp" \
+syntastic-declare-filetype "cpp" \
     "cppcheck --language=c++ --enable=all --template='{file}:{line}:1: {severity}: {message}' 2>&1" \
     "clang-format"
 
 ## FIXME: `dscanner` hasn't been tested
-_syntastic-declare-linter-formatter "d" \
+syntastic-declare-filetype "d" \
     "dscanner" \
     "dfmt"
 
 ## FIXME: `gometalinter` hasn't been tested
-_syntastic-declare-linter-formatter "go" \
+syntastic-declare-filetype "go" \
     "gometalinter" \
     "gofmt -e -s"
 
-_syntastic-declare-linter-formatter "python" \
+syntastic-declare-filetype "python" \
     "pyflakes" \
     "autopep8 -"
 
 ## FIXME: no formatter
-_syntastic-declare-linter-formatter "sh" \
-    "shellcheck -fgcc -Cnever" \
-    ""
+syntastic-declare-filetype "sh" \
+    "shellcheck -fgcc -Cnever"

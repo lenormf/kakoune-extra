@@ -59,6 +59,28 @@ Boolean that enables auto-formatting of a buffer's contents when set to
 `true`. Formatting is done before the buffer is actually saved to the
 disk.
 
+Functions
+---------
+
+syntastic-declare-filetype
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The `syntastic-declare-filetype` function allows buffers with a
+specific `filetype` to be automatically linted, and formatted if the
+according option allows it.
+
+The arguments passed to the function are, respectively:
+
+- the Kakoune `filetype` of the buffers that need to be parsed on write
+- the command to execute to lint the buffer (c.f. the `lintcmd` option)
+- the command to execute to format the buffer (c.f. the `formatcmd`
+  option)
+
+As formatting buffers automatically can be disabled, the third argument
+is optional and can be ignored when using this function. However, if an
+empty string is passed as formatting command and auto formatting is
+enabled, then the default `formatcmd` will be used.
+
 Examples
 --------
 
@@ -101,3 +123,19 @@ set window lintcmd "linter command"
 write
 set window lintcmd ""
 -----------------------------------
+
+Declaring a filetype
+~~~~~~~~~~~~~~~~~~~~
+
+It's possible to benefit from the same features provided to buffers
+whose `filetype` is officially supported with custom filetypes, by
+simply calling the `syntastic-declare-filetype` function in the main
+configuration file (`~/.config/kak/kakrc`).
+
+Example: support for automatic linting of `puppet` buffers, no
+formatting
+
+----------------------------------------------------------------------------------------------
+syntastic-declare-filetype "puppet" \
+    'puppet-lint --log-format "%{filename}:%{line}:%{column}: %{kind}: %{message} [%{check}]"'
+----------------------------------------------------------------------------------------------
