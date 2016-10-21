@@ -1,0 +1,103 @@
+syntastic.kak
+=============
+
+:syntastic-website: https://github.com/scrooloose/syntastic
+
+This script leverages the builtin `format.kak` and `lint.kak` scripts to
+provide automatic linting of the source code. Similarly to `vim`'s
+{syntastic-website}[Syntastic], the contents of a
+buffer will be passed to an external tool when it is saved to disk, and
+diagnostics will be printed on screen automatically.
+
+For a list of all the languages supported and tools used for each of
+them, refer to the `Languages and dependencies` section of this document.
+
+When loaded,the script will declare hooks that:
+
+- set the `formatcmd` and `lintcmd` options to default values unless
+  they were already defined
+- call the `format` and `lint` functions respectively before and after
+  the buffer has been saved
+
+Optionally, this script can also automatically format the code before
+writting it to the filesystem, and the commands used to either lint of
+format the code be customized, by setting the `syntastic_autoformat`
+option to `true`.
+
+Languages and dependencies
+--------------------------
+
+The following languages are currently supported, and formatted/linted by
+the according tools:
+
+- C
+	* format: `clang-format`
+	* lint: `cppcheck`
+- C++
+	* format: `clang-format`
+	* lint: `cppcheck`
+- D
+	* format: `dfmt`
+	* lint: `dscanner`
+- Go
+	* format: `gofmt`
+	* lint: `gometalinter`
+- Python
+	* format: `autopep8`
+	* lint: `pyflakes`
+- Shell
+	* format:
+	* lint: `shellcheck`
+
+Variables
+---------
+
+syntastic_autoformat
+~~~~~~~~~~~~~~~~~~~~
+
+Boolean that enables auto-formatting of a buffer's contents when set to
+`true`. Formatting is done before the buffer is actually saved to the
+disk.
+
+Examples
+--------
+
+Seamless use with the default settings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Once the script has been loaded, the buffer will automatically be
+checked when it's saved with the `write` command, granted that the
+current `filetype` is one of the languages supported and that the
+default format or lint utility is installed.
+
+If for some reason you do not want the current buffer to be parsed, you
+can disable hooks temporarily with the following command:
+
+--------------------
+eval -no-hooks write
+--------------------
+
+Overriding a default command
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Every time the buffer is saved, a hook set by this script at load time
+will activate and verify that the `formatcmd` and `lintcmd` options have
+a variable assigned. If not (e.g. they are empty), then the default
+command defined internally will be assigned to the option, and executed.
+
+To override a default command permanently, define the corresponding option
+mentioned previously in your configuration file (`~/.config/kak/kakrc`
+by default).
+
+To override a default comment temporarily, set the corresponding option
+mentioned previously manually, write the buffer and set empty out the
+same variable to let the script fill it again with a default on the next
+save.
+
+Example:
+
+-----------------------------------
+set window lintcmd "linter command"
+write
+set window lintcmd ""
+-----------------------------------
