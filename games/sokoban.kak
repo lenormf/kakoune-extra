@@ -12,7 +12,8 @@ addhl -group /sokoban regex @ 0:string
 addhl -group /sokoban regex \# 0:comment
 addhl -group /sokoban regex O 0:identifier
 
-def -params 1 -docstring "Play a game of sokoban on the level passed as parameter" \
+def -params 1 -docstring %{sokoban <level>: play a game of sokoban on the level passed as parameter
+level is an integer between 1 and 90 included} \
     sokoban %{ eval -save-regs '/"|^@m' %{
     %sh{
         readonly id_level=$(($1))

@@ -2,7 +2,10 @@
 ## utils.kak by lenormf
 ##
 
-def -params 4.. -file-completion find-parent-file -docstring 'Assign to a given variable the full path of a file, looked for upwards from a given path' %{ %sh{
+def -params 4.. -file-completion \
+    -docstring %{find-parent-file <filename> <scope:name> <depth> <dirs>: assign to a given variable the full path of a file, looked for upwards from a given path
+The dirs parameter is a list of one or more directories which the function will traverse in order} \
+    find-parent-file %{ %sh{
     filename="$1"
     variable="${2#*:}"
     variable_scope="${2%%:*}"

@@ -8,7 +8,14 @@
 ## \d|\d-\d?|\d(,\d)+?: index of the selection group or splitted group to keep (single number, range, comma separated list)
 ## s|S: selection method (select, split)
 ## …: pattern
-def -params 1.. alignr -docstring 'Align the current selection according to command strings passed in arguments' %{ %sh{
+def -params 1.. -docstring %{alignr [<descriptors>]: align the current selection according to command strings passed in arguments
+The descriptors are positional parameters written after the following format:
+  <|>?: align direction (left, right, default left)
+  w|W?: remove all whitespace from the selections prior to aligning (before selecting, after selecting, default none)
+  \d|\d-\d?|\d(,\d)+?: index of the selection group or splitted group to keep (single number, range, comma separated list)
+  s|S: selection method (select, split)
+  ...: pattern} \
+    alignr %{ %sh{
     function _echo {
         printf %s\\n "$@"
     }
