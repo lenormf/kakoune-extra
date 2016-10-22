@@ -17,7 +17,7 @@ hook global KakBegin .* %{
     }
 }
 
-def -params .. -command-completion -docstring "Create a new window in dvtm" \
+def -params .. -command-completion -docstring "Create a new window" \
     dvtm-new-window %{ %sh{
     params=""
     if [ $# -gt 0 ]; then
@@ -33,7 +33,8 @@ def -params .. -command-completion -docstring "Create a new window in dvtm" \
     fi
 } }
 
-def -params 0..1 -client-completion -docstring "Focus a client in dvtm" \
+def -params 0..1 -client-completion -docstring %{dvtm-focus [<client>] focus a client
+If no client is passed, then the current client is used} \
     dvtm-focus %{ %sh{
     if [ $# -eq 1 ]; then
         printf %s\\n "eval -client '$1' focus"
@@ -44,26 +45,9 @@ def -params 0..1 -client-completion -docstring "Focus a client in dvtm" \
     fi
 } }
 
-def -params 1.. -docstring "Tag the current client in dvtm" \
-    dvtm-tag-current %{ %sh{
-    if [ -p "${DVTM_CMD_FIFO}" ]; then
-        printf %s\\n "tag ${kak_client_env_DVTM_WINDOW_ID} $*" > "${DVTM_CMD_FIFO}"
-    else
-        printf %s\\n "echo -color Error No command socket available"
-    fi
-} }
-
-def -params 2.. -client-completion -docstring "Tag a client in dvtm" \
-    dvtm-tag %{ %sh{
-    if [ -p "${DVTM_CMD_FIFO}" ]; then
-        readonly client_name="$1"; shift
-        printf %s\\n "eval -client '${client_name}' dvtm-tag-current $*"
-    else
-        printf %s\\n "echo -color Error No command socket available"
-    fi
-} }
-
-def -params 1.. -docstring "Interact with dvtm using the dvtm-cmd utility" \
+def -params 1.. -docstring %{dvtm-cmd <command> <args>: interact with dvtm using the dvtm-cmd utility
+The command argument is a command supported by dvtm-cmd
+The tags arguments is a list of one or more tags to assign to the given client} \
     dvtm-cmd %{ %sh{
     if [ -p "${DVTM_CMD_FIFO}" ]; then
         readonly command="$1"; shift
