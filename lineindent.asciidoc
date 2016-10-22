@@ -1,0 +1,40 @@
+lineindent.kak
+==============
+
+This script provides a way to indent a selection in relation with a
+remote line, be it using a relative index or an absolute line number.
+
+Commands
+--------
+
+lineindent
+~~~~~~~~~~
+
+A single argument is expected by the `lineindent` function, which can
+take one of the following forms:
+
+- an integer, which indicates the number of the reference line, e.g. `3`
+- a plus sign `+` followed by an integer, which points to a specific
+  line beneath the current selection, e.g. `+2`
+- a negative integer, which points to a specific line above the current
+  selection, e.g. `-2`
+
+Once the modifier has been passed, it will be used to pinpoint the
+reference line, and all the lines within the current selection will be
+aligned with it.
+
+Example: indenting lines in a list (the last two lines are selected)
+
+-----------------------------------------------------------------------
+- this is the first item of a list
+  this line was manually indented to match the first item's indentation
+this line was typed after that and is part of the current selection
+and so is this one
+
+:lineindent -1<ret>
+
+- this is the first item of a list
+  this line was manually indented to match the first item's indentation
+  this line was typed after that and is part of the current selection
+  and so is this one
+-----------------------------------------------------------------------
