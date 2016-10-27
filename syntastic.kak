@@ -61,7 +61,7 @@ syntastic-declare-filetype "go" \
     "gofmt -e -s"
 
 syntastic-declare-filetype "python" \
-    "pyflakes" \
+    "flake8 --format='%(path)s:%(row)d:%(col)d: error: %(text)s'" \
     "autopep8 -"
 
 ## FIXME: no formatter
