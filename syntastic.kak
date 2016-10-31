@@ -10,33 +10,28 @@ def -params 2..3 \
     syntastic-declare-filetype %{ %sh{
     readonly filetype="$1"
 
-    printf 'hook global WinSetOption filetype=%s %%{\n' "${filetype}"
+    printf 'hook global WinSetOption filetype=%s %%{
+            hook buffer BufWritePre %%val{buffile} %%{\n' "${filetype}"
 
-    if [ "${kak_opt_syntastic_autoformat}" = "true" ]; then
-        echo 'hook buffer BufWritePre %val{buffile} %{'
-
-        if [ $# -gt 2 ] && [ -n "$3" ]; then
-            printf '%%sh{
-                if [ -z "${kak_opt_formatcmd}" ]; then
-                    printf "set buffer formatcmd \\"%%s\\"\\\\n" "%s"
-                fi
-            }\n' "$3"
-        fi
-
-        echo 'format }'
+    if [ $# -gt 2 ] && [ -n "$3" ]; then
+        printf '%%sh{
+            if [ "${kak_opt_syntastic_autoformat}" = true ] && [ -z "${kak_opt_formatcmd}" ]; then
+                printf "set buffer formatcmd \\"%%s\\"\\\\n" "%s"
+            fi
+        }\n' "$3"
     fi
 
-    echo '
+    echo 'format }
         lint-enable
         hook buffer BufWritePost %val{buffile} %{
     '
 
     if [ -n "$2" ]; then
-        printf '%%sh{
-            if [ -z "${kak_opt_lintcmd}" ]; then
-                printf "set window lintcmd \\"%%s\\"\\\\n" "%s"
+        printf "%%sh{
+            if [ -z \"\${kak_opt_lintcmd}\" ]; then
+                printf \"set window lintcmd '%%s'\\\\\\\\n\" '%s'
             fi
-        }\n' "$2"
+        }\\n" "$2"
     fi
 
     echo 'lint } }'
@@ -61,9 +56,8 @@ syntastic-declare-filetype "go" \
     "gofmt -e -s"
 
 syntastic-declare-filetype "python" \
-    "flake8 --format='%(path)s:%(row)d:%(col)d: error: %(text)s'" \
+    'flake8 --format="%(path)s:%(row)d:%(col)d: error: %(text)s"' \
     "autopep8 -"
 
-## FIXME: no formatter
 syntastic-declare-filetype "sh" \
     "shellcheck -fgcc -Cnever"
