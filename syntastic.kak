@@ -56,7 +56,7 @@ syntastic-declare-filetype "go" \
     "gofmt -e -s"
 
 syntastic-declare-filetype "python" \
-    'flake8 --format="%(path)s:%(row)d:%(col)d: error: %(text)s"' \
+    'flake8 --filename=* --format="%(path)s:%(row)d:%(col)d: error: %(text)s"' \
     "autopep8 -"
 
 syntastic-declare-filetype "sh" \
