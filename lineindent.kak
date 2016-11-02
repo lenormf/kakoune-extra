@@ -3,7 +3,6 @@
 ## Align a line with the previous/next, across empty ones
 ##
 
-## FIXME: use command counts whenever available
 def -params 1 \
 -docstring %{lineindent <offset>: indent the current selection using a remote line as reference
 The offset argument is an integer that indicates the number of the reference line, but can be prefixed with the following:
