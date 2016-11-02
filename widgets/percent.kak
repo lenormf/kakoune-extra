@@ -8,8 +8,8 @@ decl str modeline_pos_percent
 
 hook global WinCreate .* %{
     hook window NormalIdle .* %{ %sh{
-        if [ -f "${kak_bufname}" ]; then
-            echo "set window modeline_pos_percent '$(($kak_cursor_line * 100 / $(wc -l < $kak_bufname)))'"
+        if [ -f "${kak_buffile}" ]; then
+            echo "set window modeline_pos_percent '$(($kak_cursor_line * 100 / $(wc -l < $kak_buffile)))'"
         else
             echo "
                 eval -save-regs 'm' %{
