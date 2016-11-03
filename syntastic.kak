@@ -13,7 +13,7 @@ def -params 2..3 \
     printf 'hook global WinSetOption filetype=%s %%{\n' "${filetype}"
 
     if [ $# -gt 2 ] && [ -n "$3" ]; then
-        printf 'hook buffer BufWritePre \Q%%val{buffile} %%{ %%sh{
+        printf 'hook buffer BufWritePre "\Q%%val{buffile}" %%{ %%sh{
             if [ "${kak_opt_syntastic_autoformat}" = true ]; then
                 if [ -z "${kak_opt_formatcmd}" ]; then
                     printf "set buffer formatcmd \\"%%s\\"\\\\n" "%s"
@@ -25,7 +25,7 @@ def -params 2..3 \
 
     echo '
         lint-enable
-        hook buffer BufWritePost \Q%val{buffile} %{
+        hook buffer BufWritePost "\Q%val{buffile}" %{
     '
 
     if [ -n "$2" ]; then
