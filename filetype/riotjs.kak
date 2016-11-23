@@ -8,7 +8,8 @@
 # Detection
 # ‾‾‾‾‾‾‾‾‾
 
-hook global BufCreate .*/?.+\.tag %{
+hook global BufCreate .+\.tag %{
+    set buffer mimetype ""
     set buffer filetype riotjs
 }
 

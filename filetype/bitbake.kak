@@ -8,18 +8,9 @@
 # Detection
 # ‾‾‾‾‾‾‾‾‾
 
-hook global BufCreate .*/?.+\.bb(class|append)? %{
+hook global BufCreate .+\.bb(class|append)? %{
+    set buffer mimetype ""
     set buffer filetype bitbake
-}
-
-hook global WinSetOption mimetype=text/x-(python|shellscript) %{
-    %sh{
-        ## If the file is detected as a python or shell script, reset the filetype
-        ## This occurs because bitbake files can contain inline shell or python functions
-        if echo "bb bbclass bbappend" | grep -qiw "${kak_bufname##*.}"; then
-            echo "set buffer filetype bitbake"
-        fi
-    }
 }
 
 # Highlighters

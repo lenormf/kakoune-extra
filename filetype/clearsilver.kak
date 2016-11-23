@@ -9,17 +9,8 @@
 # ‾‾‾‾‾‾‾‾‾
 
 hook global BufCreate .+\.cst %{
+    set buffer mimetype ""
     set buffer filetype clearsilver
-}
-
-hook global WinSetOption mimetype=text/html %{
-    %sh{
-        ## If the file is detected as a python or shell script, reset the filetype
-        ## This occurs because clearsilver files contain HTML markup
-        if echo "cst" | grep -qiw "${kak_bufname##*.}"; then
-            echo "set buffer filetype clearsilver"
-        fi
-    }
 }
 
 # Highlighters

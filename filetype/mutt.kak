@@ -6,7 +6,7 @@
 # http://www.mutt.org/
 # ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 
-hook global WinCreate /tmp/mutt-.* %{
+hook global BufCreate /tmp/mutt-.* %{
     set buffer filetype mail
 }
 
