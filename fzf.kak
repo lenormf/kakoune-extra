@@ -4,7 +4,7 @@
 ## https://github.com/junegunn/fzf
 ##
 
-# `fzf-open-cached` requires `find-parent-file` in `utils.kak`
+# `fzf-cached` requires `find-parent-file` in `utils.kak`
 
 decl str fzf_filesearch_cmd 'ag -g "" "%s"'
 decl str fzf_options '-m'
@@ -13,9 +13,9 @@ decl str fzf_cache_filename 'paths'
 decl -hidden str fzf_cache_path
 
 def -params .. -file-completion \
-    -docstring %{fzf-open [<dirs>]: open a file in the given directories
+    -docstring %{fzf [<dirs>]: open a file in the given directories
 If no directories are given then the directory in which the current buffer was saved is used} \
-    fzf-open %{ %sh{
+    fzf %{ %sh{
     if [ -z "${TMUX}" ]; then
         printf 'echo -color Error This function must be run in a `tmux` session\n'
         exit
@@ -27,16 +27,16 @@ If no directories are given then the directory in which the current buffer was s
         cwd=$(dirname "${kak_buffile}" | sed 's/\//\\\//g')
     fi
     filesearch_cmd=$(printf %s "${kak_opt_fzf_filesearch_cmd}" | sed "s/%s/${cwd}/g")
-    eval "${filesearch_cmd}" | fzf-tmux ${kak_opt_fzf_options} | while read path; do
+    eval "${filesearch_cmd}" | eval "fzf-tmux ${kak_opt_fzf_options}" | while read path; do
         printf "eval -try-client '%s' edit '%s'" "${kak_client}" "${path}" \
             | kak -p "${kak_session}"
     done
 } }
 
 def -params .. -file-completion \
-    -docstring %{fzf-open-cached [<dirs>] open a file in the given cached directories
+    -docstring %{fzf-cached [<dirs>] open a file in the given cached directories
 If no directories are given then the directory in which the current buffer was saved is used} \
-    fzf-open-cached %{
+    fzf-cached %{
     %sh{
         if [ -z "${TMUX}" ]; then
             printf 'echo -color Error This function must be run in a `tmux` session\n'
