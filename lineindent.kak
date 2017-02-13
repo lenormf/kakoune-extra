@@ -12,13 +12,13 @@ The offset argument is an integer that indicates the number of the reference lin
     pattern_align=''
     n=$(expr "$1" : '\([+-]*[0-9]*\)')
     case "$1" in
-        -[0-9]*) pattern_align="${n}<a-/>^\\h*[^\\n]+\\n+<ret>";;
-        +[0-9]*) pattern_align="${n}/^\\h*[^\\n]+\\n+<ret>";;
+        -[0-9]*) pattern_align="${n}<a-/>^\\h*[^\\h\\n]+<ret>";;
+        +[0-9]*) pattern_align="gl ${n}/^\\h*[^\\h\\n]+<ret>";;
         [0-9]*) pattern_align="${n}g";;
         *) exit;;
     esac
 
     printf %s\\n "eval -draft -save-regs '/\"|^@' %{
-        exec Z ${pattern_align} I<esc><a-z> <a-&>
+        exec \"<a-s><a-K>^$<ret>giZ'<space>${pattern_align}gi<a-z><a-&>\"
     }"
 } }
