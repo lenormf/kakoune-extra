@@ -19,6 +19,6 @@ The offset argument is an integer that indicates the number of the reference lin
     esac
 
     printf %s\\n "eval -draft -save-regs '/\"|^@' %{
-        exec \"<a-s><a-K>^$<ret>giZ'<space>${pattern_align}gi<a-z><a-&>\"
+        try %{ exec \"<a-s><a-K>^$<ret>giZ'<space>${pattern_align}gi<a-z><a-&>\" }
     }"
 } }
