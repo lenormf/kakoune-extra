@@ -1,0 +1,46 @@
+autodownload.asciidoc
+=====================
+
+This script allows the editor to automatically download and display the file pointed to by URLs.
+
+Whenever a URL is passed as argument to `kak` or to the `buffer` command, a hook will be triggered and try to download the file and display it into
+a new buffer using a command line download utility (`wget` by default).
+
+Additionally, a buffer showing the progress of the download is created and will remain visible until the file has finished being downloaded.
+
+Variables
+---------
+
+autodownload_keep_log
+~~~~~~~~~~~~~~~~~~~~~
+
+Boolean variable that allows the buffer that shows the output of the download command to be removed once the download has completed.
+
+autodownload_format
+~~~~~~~~~~~~~~~~~~~
+
+This string variable contains a template of the command to use to download URLs passed as buffer names. Several variables in the markup
+format (`{var}`) wil be replaced by the following respective values:
+
+* `{url}`: address pointing to the file to download, the buffer name
+* `{progress}`: path to the FIFO file to which the download progress should be written
+* `{output}`: path to the file that should be overwritten with the downloaded file
+
+There are three downloaders supported by the script by default:
+
+* `wget`
+* `aria2`
+* `curl`
+
+The default downloader is `wget`, and it can be changed by setting the `autodownload_format` option accordingly:
+
+```
+## Set the default downloader to be wget
+set global autodownload_format %opt{autodownload_format_wget}
+
+## or set the default downloader to be aria2
+set global autodownload_format %opt{autodownload_format_aria2}
+
+## or set the default downloader to be curl
+set global autodownload_format %opt{autodownload_format_curl}
+```

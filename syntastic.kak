@@ -23,8 +23,9 @@ def -params 2..3 \
         } }\n' "$(printf %s "$3" | sed -e 's/"/\\\\\\"/g' -e 's/%/\\\\%/g')"
     fi
 
+    ## FIXME: try isn't the good solution, this has to be executed only once
     echo '
-        lint-enable
+        try %{ lint-enable }
         hook buffer BufWritePost "\Q%val{buffile}" %{
     '
 

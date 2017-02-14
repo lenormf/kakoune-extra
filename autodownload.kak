@@ -19,69 +19,71 @@ decl str autodownload_format_curl "curl -o '{output}' '{url}' 2> '{progress}'"
 set global autodownload_format %opt{autodownload_format_wget}
 
 hook global BufNew .* %{
-    %sh{
+    %sh{ {
         readonly netproto_url="${kak_bufname}"
         readonly netproto_proto="${netproto_url%:*}"
 
         ## Check that the downloader used is reachable from this shell
-        type "${kak_opt_autodownload_format%% *}" 2>&1 >/dev/null || exit
+        command -v "${kak_opt_autodownload_format%% *}" >/dev/null || exit
 
         ## Check that a url was passed to kakoune
-        [[ "${netproto_url}" =~ ^[a-zA-Z0-9]+://.+ ]] || exit
+        if ! expr "${netproto_url}" : '[a-zA-Z][a-zA-Z]*://.' >/dev/null; then
+            exit
+        fi
 
         ## Create a temporary directory in which we will download the file
         readonly path_dir_tmp=$(mktemp -d -t kak-proto.XXXXXXXX)
-        test ! -z "${path_dir_tmp}" || {
-            echo "echo -color Error Unable to create temporary directory";
-            exit;
-        }
+        if [ -z "${path_dir_tmp}" ]; then
+            echo "echo -debug Unable to create temporary directory" | kak -p "${kak_session}"
+            exit 2
+        fi
 
         readonly netproto_buffer="${path_dir_tmp}/buffer"
         readonly netproto_fifo="${path_dir_tmp}/fifo"
 
-		## Create a named pipe that will print the download status
-        mkfifo "${netproto_fifo}" || {
-            echo "echo -color Error Unable to create named pipe";
-            exit;
-        }
+        ## Create a named pipe that will print the download status
+        if ! mkfifo "${netproto_fifo}"; then
+            rm -rf "${path_dir_tmp}"
+            echo "echo -debug Unable to create named pipe" | kak -p "${kak_session}"
+            exit 2
+        fi
 
         readonly buffer_basename="${netproto_url##*/}"
 
-		## Start downloading the file to a temporary directory
-		## When the download has finished, remove the pipe to notify the hook below that the file can be loaded
-        (
+        ## Start downloading the file to a temporary directory
+        {
             download_str=$(printf %s "${kak_opt_autodownload_format}" | \
                                sed -e "s/{url}/${netproto_url//\//\\\/}/g" \
                                    -e "s/{progress}/${netproto_fifo//\//\\\/}/g" \
                                    -e "s/{output}/${netproto_buffer//\//\\\/}/g")
-            eval "${download_str}" &
-            rm -f "${netproto_fifo}"
-        ) 2>&1 >/dev/null </dev/null &
+            eval "${download_str}"
+        } 2>&1 >/dev/null </dev/null &
 
-		## Open a new buffer who will read and print the download's progress
-		## Remove the original buffer that was named after the URL of the file to fetch
-		## When the file has been downloaded, create its own buffer and remove temporary files
-		## If the user doesn't want to have the download progress kept in its own buffer after
-		## the download has finished, we remove that buffer
+        ## Open a new buffer who will read and print the download's progress
+        ## Remove the original buffer that was named after the URL of the file to fetch
+        ## When the file has been downloaded, create its own buffer and remove temporary files
+        ## If the user doesn't want to have the download progress kept in its own buffer after
+        ## the download has finished, we remove that buffer
         printf %s "
-            eval %{
+            eval -buffer '${netproto_url}' %{
                 edit! -fifo '${netproto_fifo}' -scroll 'download:${netproto_url}'
-                delbuf! '${netproto_url}'
-                hook -group fifo buffer BufCloseFifo .* %{
+                delete-buffer! '${netproto_url}'
+                hook -group fifo 'buffer=download:${netproto_url}' BufCloseFifo .* %{
                     edit '${buffer_basename}'
                     exec '%d!cat<space>${netproto_buffer}<ret>d'
                     %sh{
                         rm -rf '${path_dir_tmp}'
                         if [ '${kak_opt_autodownload_keep_log,,}' != true ]; then
                             printf %s '
-                                delbuf! download:${netproto_url}
-                                buffer ${buffer_basename}
+                                delete-buffer! 'download:${netproto_url}'
+                                buffer '${buffer_basename}'
                             '
                         fi
                     }
                     rmhooks buffer fifo
                 }
             }
-        "
+        " | kak -p "${kak_session}"
+    } 2>&1 >/dev/null </dev/null &
     }
 }
