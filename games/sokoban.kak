@@ -10,7 +10,7 @@ decl -hidden str _sokoban_holes
 addhl -group / group sokoban
 addhl -group /sokoban regex @ 0:string
 addhl -group /sokoban regex \# 0:comment
-addhl -group /sokoban regex O 0:identifier
+addhl -group /sokoban regex O 0:variable
 
 def -params 1 -docstring %{sokoban <level>: play a game of sokoban on the level passed as parameter
 level is an integer between 1 and 90 included} \
