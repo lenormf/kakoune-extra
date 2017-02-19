@@ -18,7 +18,7 @@ decl str autodownload_format_curl "curl -o '{output}' '{url}' 2> '{progress}'"
 ## Set the default downloader to be wget
 set global autodownload_format %opt{autodownload_format_wget}
 
-hook global BufNew .* %{
+hook global BufNewFile .* %{
     %sh{ {
         readonly netproto_url="${kak_bufname}"
         readonly netproto_proto="${netproto_url%:*}"
