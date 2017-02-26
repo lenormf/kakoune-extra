@@ -4,5 +4,5 @@
 ##
 
 hook global WinSetOption filetype=.+ %{
-    addhl regex \<(TODO|FIXME|XXX|NOTE)\> 0:default+rb
+    try %{ addhl regex \<(TODO|FIXME|XXX|NOTE)\> 0:default+rb }
 }
