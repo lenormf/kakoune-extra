@@ -1,0 +1,51 @@
+dictcomplete.asciidoc
+=====================
+
+This script enables completion using a dictionary in buffers that
+usually contain lots of plain text (e.g. `asciidoc`). After a certain
+minimal amount of alpha-numerical letters has been typed (c.f. the
+`dict_min_chars` variable below), the completion will kick in a try to
+propose several candidates fetched using the system's `aspell` utility.
+
+A completion menu will pop up under the current word assuming the
+conditions for the completion to be triggered were fulfilled (and no
+candidate is available from the builtin engine), listing all
+possibilities with the `value` face.
+
+Variables
+---------
+
+dict_min_chars
+~~~~~~~~~~~~~~
+
+Integer variable that controls the minimum amount of characters that
+have to be typed in an alpha-numerical word to trigger the completion.
+
+This value is inclusive and defaults to `3`.
+
+dict_lang
+~~~~~~~~~
+
+String that contains the language of the dictionary to use when fetching
+candidates, as per `aspell`'s standard (e.g. `en`, `en-US`).
+
+The default language is `en`.
+
+dict_size
+~~~~~~~~~
+
+Integer variable that holds the size of the dictionary to be queried, as
+per `aspell`'s definition. A generic implementation of this tool usually
+defines the following values:
+
+* `10`: tiny
+* `20`: really small
+* `30`: small
+* `40`: med-small
+* `50`: med
+* `60`: med-large
+* `70`: large
+* `80`: huge
+* `90`: insane
+
+The default value is `30` (small).
