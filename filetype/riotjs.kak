@@ -9,7 +9,6 @@
 # ‾‾‾‾‾‾‾‾‾
 
 hook global BufCreate .+\.tag %{
-    set buffer mimetype ""
     set buffer filetype riotjs
 }
 
