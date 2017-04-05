@@ -5,6 +5,8 @@ This script allows the editor to automatically download and display the file poi
 
 Whenever a URL is passed as argument to `kak` or to the `buffer` command, a hook will be triggered and try to download the file and display it into
 a new buffer using a command line download utility (`wget` by default).
+The most common compression formats (zip, rar, gzip, bzip etc) are supported, granted that a single file is pointed to by the URL
+(i.e. compressed archives are not supported).
 
 Additionally, a buffer showing the progress of the download is created and will remain visible until the file has finished being downloaded.
 

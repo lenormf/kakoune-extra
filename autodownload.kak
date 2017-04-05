@@ -21,6 +21,7 @@ set global autodownload_format %opt{autodownload_format_wget}
 hook global BufNewFile .* %{
     %sh{ {
         readonly netproto_url="${kak_bufname}"
+        readonly netproto_ext="${netproto_url##*.}"
         readonly netproto_proto="${netproto_url%:*}"
 
         ## Check that the downloader used is reachable from this shell
@@ -69,8 +70,20 @@ hook global BufNewFile .* %{
                 edit! -fifo '${netproto_fifo}' -scroll 'download:${netproto_url}'
                 delete-buffer! '${netproto_url}'
                 hook -group fifo 'buffer=download:${netproto_url}' BufCloseFifo .* %{
+                    nop %sh{
+                        if command -v atool >/dev/null; then
+                            case \"${netproto_ext}\" in
+                                zip|rar|lha|lzh|7z|alz|ace|arj|arc|gz|bz|bz2|Z|lzma|lzo|lz|xz|rz|lrz|7z|cpio)
+                                    readonly path_tmp_file=\$(mktemp kak-extract.XXXXXXXX)
+                                    atool -F \"${netproto_ext}\" -X \"\${path_tmp_file}\" \"${netproto_buffer}\" 2>/dev/null
+                                    mv \"\${path_tmp_file}\" \"${netproto_buffer}\"
+                                ;;
+                            esac
+                        fi
+                    }
                     edit '${buffer_basename}'
-                    exec '%d!cat<space>${netproto_buffer}<ret>d'
+                    exec -no-hooks '%d!cat \"${netproto_buffer}\"<ret>d'
+
                     %sh{
                         rm -rf '${path_dir_tmp}'
                         if [ '${kak_opt_autodownload_keep_log,,}' != true ]; then
