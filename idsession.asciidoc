@@ -1,0 +1,9 @@
+idsession.asciidoc
+==================
+
+Kakoune assigns the process ID of the server as session name, which
+makes it moderatly difficult to make a difference from several active sessions on the session.
+This script automatically renames the current session with a more human friendly format: an adjective and a name.
+
+The adjective and the name are selected pseudo-randomly, which should avoid collisions, but not
+necessarily guarantee they won't happen.
