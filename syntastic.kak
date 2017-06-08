@@ -3,7 +3,8 @@
 ## Auto lint (and optionally format) your code on write
 ##
 
-decl bool syntastic_autoformat no
+decl -docstring "format the buffer on save" \
+    bool syntastic_autoformat no
 
 def -params 2..3 \
     -docstring %{syntastic-declare-filetype <filetype> <lintcmd> <formatcmd>: automatically lint and/or format buffers on write} \

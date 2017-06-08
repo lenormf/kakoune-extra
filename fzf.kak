@@ -6,9 +6,13 @@
 
 # `fzf-cached` requires `find-parent-file` in `utils.kak`
 
-decl str fzf_filesearch_cmd 'ag -g "" "%s"'
-decl str fzf_options '-m'
-decl str fzf_cache_filename 'paths'
+decl -docstring %{formatted shell command whose output is passed to `fzf` to generate a list of tokens
+Each occurence of the `%s` string will be replaced with the directory to list} \
+    str fzf_filesearch_cmd 'ag -g "" "%s"'
+decl -docstring "options passed to `fzf` when listing a directory" \
+    str fzf_options '-m'
+decl -docstring "name of the cache filename looked for by the `fzf-cached` command" \
+    str fzf_cache_filename 'paths'
 
 decl -hidden str fzf_cache_path
 

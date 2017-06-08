@@ -6,9 +6,13 @@
 
 # `fzy-cached` requires `find-parent-file` in `utils.kak`
 
-decl str fzy_filesearch_cmd 'ag -g "" "%s"'
-decl str fzy_options '-l $(tput lines)'
-decl str fzy_cache_filename 'paths'
+decl -docstring %{formatted shell command whose output is passed to `fzy` to generate a list of tokens
+Each occurence of the `%s` string will be replaced with the directory to list} \
+    str fzy_filesearch_cmd 'ag -g "" "%s"'
+decl -docstring "options passed to `fzy` when listing a directory" \
+    str fzy_options '-l $(tput lines)'
+decl -docstring "name of the cache filename looked for by the `fzy-cached` command" \
+    str fzy_cache_filename 'paths'
 
 decl -hidden str fzy_cache_path
 

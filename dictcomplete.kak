@@ -3,10 +3,19 @@
 ## Dictionary completion based on `aspell` in text-based buffers
 ##
 
-decl int dict_min_chars 3
-decl str dict_lang "en"
-# 10=tiny, 20=really small,  30=small,  40=med-small,  50=med, 60=med-large, 70=large, 80=huge, 90=insane
-decl int dict_size 30
+decl -docstring "minimum amount of characters in a word necessary to trigger completion" int dict_min_chars 3
+decl -docstring "language identifier passed to `aspell` when loading a dictionary" str dict_lang "en"
+decl -docstring %{size of the dictionary to load, as per `aspell` conventions:
+  - 10: tiny
+  - 20: really small
+  - 30: small
+  - 40: med-small
+  - 50: med
+  - 60: med-large
+  - 70: large
+  - 80: huge
+  - 90: insane} \
+    int dict_size 30
 
 decl -hidden completions dict_completions
 

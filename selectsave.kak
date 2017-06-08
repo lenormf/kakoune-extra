@@ -3,8 +3,9 @@
 ## Save the selection when writing a buffer, and restore them when opening it later
 ##
 
-decl str selectsave_path_dir_cache %sh{printf %s "${XDG_CONFIG_HOME:-${HOME}/.config}/kak"}
-decl str selectsave_path_cache "%opt{selectsave_path_dir_cache}/selections_desc.txt"
+decl -docstring "path to the directory in which the cache is stored" \
+    str selectsave_path_dir_cache %sh{printf %s "${XDG_CONFIG_HOME:-${HOME}/.config}/kak"}
+decl -docstring "full path to the cache file" str selectsave_path_cache "%opt{selectsave_path_dir_cache}/selections_desc.txt"
 
 hook global WinDisplay [^*].* %{ %sh{
     if [ -e "${kak_opt_selectsave_path_cache}" ]; then
