@@ -9,8 +9,9 @@ The offset argument is an integer that indicates the number of the reference lin
   - '-': indent with the previous non empty line, e.g. -2 for second line above the current selection
   - '+': indent with the next non empty line, e.g. +3 for the third line beneath the current selection} \
     lineindent %{ %sh{
+set -x
     pattern_align=''
-    n=$(expr "$1" : '\([+-]*[0-9]*\)')
+    n=$(expr "$1" : '[+-]*\([0-9]*\)')
     case "$1" in
         -[0-9]*) pattern_align="${n}<a-/>^\\h*[^\\h\\n]+<ret>";;
         +[0-9]*) pattern_align="gl ${n}/^\\h*[^\\h\\n]+<ret>";;
@@ -18,7 +19,7 @@ The offset argument is an integer that indicates the number of the reference lin
         *) exit;;
     esac
 
-    printf %s\\n "eval -draft -save-regs '/\"|^@' %{
-        try %{ exec \"<a-s><a-K>^$<ret>giZ'<space>${pattern_align}gi<a-z><a-&>\" }
+    printf %s\\n "eval -draft %{
+        try %{ exec \"<a-s><a-K>^$<ret>giZ'<space>${pattern_align}gi<a-z>a<a-&>\" }
     }"
 } }
