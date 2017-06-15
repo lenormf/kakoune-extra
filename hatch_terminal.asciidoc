@@ -1,0 +1,38 @@
+hatch_terminal.asciidoc
+=======================
+
+This script allows spawning a shell or an arbitrary command in a new window, exporting information about the current session in the environment.
+
+Commands
+--------
+
+The following commands are specialized implementations that all follow the same prototype. They all take an optional argument, a shell command
+that will be run in the newly created window. If no command is passed, a shell is spawned.
+
+The environment of the newly created window will contain the following environment variables:
+
+* `KAK_SESSION`: name of the parent session that spawned the window
+* `KAK_CLIENT`: name of the parent client that spawned the window
+
+hatch-terminal-x11
+~~~~~~~~~~~~~~~~~~
+
+Implementation used when no multiplexer is detected and the `$DISPLAY` environment variable is not empty. A new terminal is spawned using the `termcmd` option.
+
+hatch-terminal-tmux
+~~~~~~~~~~~~~~~~~~~
+
+Implementation used when the `$TMUX` environment variable is not empty, creates an horizontal split by default.
+
+hatch-terminal-dvtm
+~~~~~~~~~~~~~~~~~~~
+
+Implementation used when the `$DVTM` environment variable is not empty.
+
+Aliases
+-------
+
+hatch-terminal
+~~~~~~~~~~~~~~
+
+The `hatch-terminal` alias is automatically set to one of the commands defined by the script, according to the environment in which the session is set.
