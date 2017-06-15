@@ -1,0 +1,33 @@
+autosplit.asciidoc
+==================
+
+The goal of this script is to allow spawning several clients in a
+predefined layout to simply setting up a semi-integrated development environment.
+
+The major focus is the [tmux](https://tmux.github.io/) multiplexer, but support
+for [dvtm](https://github.com/martanne/dvtm) is also provided in vertical stacking mode only.
+
+Commands
+--------
+
+autosplit
+~~~~~~~~~
+
+This command is intended to be used in a new empty session in a supported terminal multiplexer,
+using it in a session that contains more than one window might result in a wonky layout.
+
+The first optional argument is the layout and can be one of the following:
+
+  * `vstack`: vertical stack with a left hand side main view
+  * `hstack`: horizontal stack with a top main view
+  * `grid`: array of equally sized tiles
+
+The second argument is optional if the layout has been specified, and
+dictates how much space is available in the window:
+
+  * `large`: all clients (`doc`, `jump`, `tools`) are opened
+  * `medium`: the `doc` and `jump` clients are opened
+  * `small`: the `doc` client is opened
+
+An unrenamed client is always created additionally to the above clients
+for regular editing.
