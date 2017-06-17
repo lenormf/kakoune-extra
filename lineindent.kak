@@ -9,7 +9,6 @@ The offset argument is an integer that indicates the number of the reference lin
   - '-': indent with the previous non empty line, e.g. -2 for second line above the current selection
   - '+': indent with the next non empty line, e.g. +3 for the third line beneath the current selection} \
     lineindent %{ %sh{
-set -x
     pattern_align=''
     n=$(expr "$1" : '[+-]*\([0-9]*\)')
     case "$1" in
