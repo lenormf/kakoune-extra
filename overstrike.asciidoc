@@ -1,0 +1,25 @@
+overstrike.asciidoc
+===================
+
+This module allows overstrike formatted contents to be rendered by Kakoune in a buffer.
+
+The following environment variables will be parsed and translated into faces at parsing time:
+
+* `LESS_TERMCAP_md`: capacity used by the `less` pager to render bold text
+* `LESS_TERMCAP_us`: capacity used by the `less` pager to render underlined text
+
+If those variables are not exported in the environment, regular bold and underline effects will be used instead.
+
+Accentuated characters using an overstrike sequence are not supported.
+
+Commands
+--------
+
+overstrike-parse
+~~~~~~~~~~~~~~~~
+
+Parse the current buffer and apply a highlighter to the current window that applies the `OverstrikeBold` and
+`OverstrikeUnderline` faces to the overstriken text.
+
+Note that this function isn't suited to convert big documents (> 1000 lines) at the time of writing. For reference,
+it takes a solid minute to render `bash`'s manpage, and around 5 minutes to render `gcc`'s.
