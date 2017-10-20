@@ -1,0 +1,17 @@
+##
+## git.kak by lenormf
+##
+
+# http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
+# ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
+
+# Faces that highlight text that overflows the following limits:
+#   - title: 50 characters
+#   - body: 72 characters
+face GitOverflowTitle yellow
+face GitOverflowBody yellow
+
+hook -group git-commit-highlight global WinSetOption filetype=git-(commit|rebase) %{
+    add-highlighter -group git-commit-highlight regex "^\h*[^#\s][^\n]{71}([^\n]+)" 1:GitOverflowBody
+    add-highlighter -group git-commit-highlight regex "\`[\s\n]*[^#\s][^\n]{49}([^\n]+)" 1:GitOverflowTitle
+}
