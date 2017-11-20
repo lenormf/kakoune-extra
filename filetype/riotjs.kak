@@ -9,26 +9,26 @@
 # ‾‾‾‾‾‾‾‾‾
 
 hook global BufCreate .+\.tag %{
-    set buffer filetype riotjs
+    set-option buffer filetype riotjs
 }
 
 # Highlighters
 # ‾‾‾‾‾‾‾‾‾‾‾‾
 
-addhl -group / regions riotjs \
+add-highlighter shared/ regions riotjs \
     partial '^\s+<' '$' '' \
     model '^\s+[^<]' '$' ''
 
-addhl -group /riotjs/model ref javascript
-addhl -group /riotjs/partial ref html
+add-highlighter shared/riotjs/model ref javascript
+add-highlighter shared/riotjs/partial ref html
 
 # Initialization
 # ‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 
 hook global WinSetOption filetype=riotjs %{
-    addhl ref riotjs
+    add-highlighter window ref riotjs
 }
 
 hook global WinSetOption filetype=(?!riotjs).* %{
-    rmhl riotjs
+    remove-highlighter window/riotjs
 }

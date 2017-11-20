@@ -4,15 +4,15 @@
 ##
 
 # Selections description of all the holes on the map
-decl -hidden str _sokoban_holes
+declare-option -hidden str _sokoban_holes
 
 # Colorize the levels
-addhl -group / group sokoban
-addhl -group /sokoban regex @ 0:string
-addhl -group /sokoban regex '#' 0:comment
-addhl -group /sokoban regex O 0:variable
+add-highlighter shared/ group sokoban
+add-highlighter shared/sokoban regex @ 0:string
+add-highlighter shared/sokoban regex '#' 0:comment
+add-highlighter shared/sokoban regex O 0:variable
 
-def -params 1 -docstring %{sokoban <level>: play a game of sokoban on the level passed as parameter
+define-command -params 1 -docstring %{sokoban <level>: play a game of sokoban on the level passed as parameter
 level is an integer between 1 and 90 included} \
     sokoban %{ eval -save-regs '/"|^@m' %{
     %sh{
@@ -118,7 +118,7 @@ level is an integer between 1 and 90 included} \
     %sh{
         if [ -z "${kak_reg_m}" ]; then
             printf %s "
-                echo -color Error 'No such level: $1'
+                echo -markup '{Error}No such level: $1!'
             "
             exit 1
         fi
@@ -130,20 +130,20 @@ level is an integer between 1 and 90 included} \
             edit -scratch *sokoban*
             exec \\%c<c-r>m<esc>
             exec \\%s\\.<ret>
-            set buffer _sokoban_holes %val{selections_desc}
+            set-option buffer _sokoban_holes %val{selections_desc}
             _sokoban-set-hooks
-            addhl ref sokoban
+            add-highlighter window ref sokoban
             exec /@<ret>
         "
     }
 } }
 
-def -hidden _sokoban-quit %{
-    rmhl sokoban
-    rmhooks buffer sokoban-input
+define-command -hidden _sokoban-quit %{
+    remove-highlighter window/sokoban
+    remove-hooks buffer sokoban-input
 }
 
-def -hidden _sokoban-left %{ eval -save-regs '/"|^@' %{
+define-command -hidden _sokoban-left %{ eval -save-regs '/"|^@' %{
     exec l
     try %{
         ## is the player against a wall?
@@ -166,7 +166,7 @@ def -hidden _sokoban-left %{ eval -save-regs '/"|^@' %{
     }
 } }
 
-def -hidden _sokoban-right %{ eval -save-regs '/"|^@' %{
+define-command -hidden _sokoban-right %{ eval -save-regs '/"|^@' %{
     exec h
     try %{
         ## is the player against a wall?
@@ -189,7 +189,7 @@ def -hidden _sokoban-right %{ eval -save-regs '/"|^@' %{
     }
 } }
 
-def -hidden _sokoban-up %{ eval -save-regs '/"|^@' %{
+define-command -hidden _sokoban-up %{ eval -save-regs '/"|^@' %{
     exec j
     try %{
         ## is the player against a wall?
@@ -212,7 +212,7 @@ def -hidden _sokoban-up %{ eval -save-regs '/"|^@' %{
     }
 } }
 
-def -hidden _sokoban-down %{ eval -save-regs '/"|^@' %{
+define-command -hidden _sokoban-down %{ eval -save-regs '/"|^@' %{
     exec k
     try %{
         ## is the player against a wall?
@@ -235,7 +235,7 @@ def -hidden _sokoban-down %{ eval -save-regs '/"|^@' %{
     }
 } }
 
-def -hidden _sokoban-on-move %{ eval -draft %{
+define-command -hidden _sokoban-on-move %{ eval -draft %{
     ## If all the holes have been covered with boulders, the game is over
     #select %opt{_sokoban_holes}
 
@@ -258,11 +258,11 @@ def -hidden _sokoban-on-move %{ eval -draft %{
         select %opt{_sokoban_holes}
         exec -draft <a-K>O<ret>
     } catch %{
-        eval -client %val{client} echo -color Information You win!
+        eval -client %val{client} echo -markup "{Information}You win!"
     }
 } }
 
-def -hidden _sokoban-set-hooks %{
+define-command -hidden _sokoban-set-hooks %{
     hook buffer BufClose \*sokoban\* _sokoban-quit
 
     hook -group sokoban-input buffer NormalKey <left> _sokoban-left
@@ -272,12 +272,12 @@ def -hidden _sokoban-set-hooks %{
     hook -group sokoban-input buffer NormalKey (<left>|<right>|<up>|<down>) _sokoban-on-move
 }
 
-decl -hidden str _sokoban_level_0 "
+declare-option -hidden str _sokoban_level_0 "
 #####
 #@o.#
 #####"
 
-decl -hidden str _sokoban_level_1 "
+declare-option -hidden str _sokoban_level_1 "
     #####
     #   #
     #o  #
@@ -290,7 +290,7 @@ decl -hidden str _sokoban_level_1 "
     #     #########
     #######"
 
-decl -hidden str _sokoban_level_2 "
+declare-option -hidden str _sokoban_level_2 "
 ############
 #..  #     ###
 #..  # o  o  #
@@ -302,7 +302,7 @@ decl -hidden str _sokoban_level_2 "
   #    #     #
   ############"
 
-decl -hidden str _sokoban_level_3 "
+declare-option -hidden str _sokoban_level_3 "
         ########
         #     @#
         # o#o ##
@@ -314,7 +314,7 @@ decl -hidden str _sokoban_level_3 "
 #....  ##########
 ########"
 
-decl -hidden str _sokoban_level_4 "
+declare-option -hidden str _sokoban_level_4 "
            ########
            #  ....#
 ############  ....#
@@ -330,7 +330,7 @@ decl -hidden str _sokoban_level_4 "
 #    #    ##
 ###########"
 
-decl -hidden str _sokoban_level_5 "
+declare-option -hidden str _sokoban_level_5 "
         #####
         #   #####
         # #o##  #
@@ -345,7 +345,7 @@ decl -hidden str _sokoban_level_5 "
           #    #
           ######"
 
-decl -hidden str _sokoban_level_6 "
+declare-option -hidden str _sokoban_level_6 "
 ######  ###
 #..  # ##@##
 #..  ###   #
@@ -358,7 +358,7 @@ decl -hidden str _sokoban_level_6 "
    #  ##   #
    #########"
 
-decl -hidden str _sokoban_level_7 "
+declare-option -hidden str _sokoban_level_7 "
        #####
  #######   ##
 ## # @## oo #
@@ -372,7 +372,7 @@ decl -hidden str _sokoban_level_7 "
 #  ### #####
 ####"
 
-decl -hidden str _sokoban_level_8 "
+declare-option -hidden str _sokoban_level_8 "
   ####
   #  ###########
   #    o   o o #
@@ -390,7 +390,7 @@ decl -hidden str _sokoban_level_8 "
   #......#
   ########"
 
-decl -hidden str _sokoban_level_9 "
+declare-option -hidden str _sokoban_level_9 "
           #######
           #  ...#
       #####  ...#
@@ -406,7 +406,7 @@ decl -hidden str _sokoban_level_9 "
      #      #
      ########"
 
-decl -hidden str _sokoban_level_10 "
+declare-option -hidden str _sokoban_level_10 "
  ###  #############
 ##@####       #   #
 # oo   oo  o o ...#
@@ -424,7 +424,7 @@ decl -hidden str _sokoban_level_10 "
     #           #.#
     ###############"
 
-decl -hidden str _sokoban_level_11 "
+declare-option -hidden str _sokoban_level_11 "
           ####
      #### #  #
    ### @###o #
@@ -441,7 +441,7 @@ decl -hidden str _sokoban_level_11 "
 #.....#
 #######"
 
-decl -hidden str _sokoban_level_12 "
+declare-option -hidden str _sokoban_level_12 "
 ################
 #              #
 # # ######     #
@@ -456,7 +456,7 @@ decl -hidden str _sokoban_level_12 "
         #     #
         #######"
 
-decl -hidden str _sokoban_level_13 "
+declare-option -hidden str _sokoban_level_13 "
    #########
   ##   ##  #####
 ###     #  #    ###
@@ -471,7 +471,7 @@ decl -hidden str _sokoban_level_13 "
  #  #    ##########
  ####"
 
-decl -hidden str _sokoban_level_14 "
+declare-option -hidden str _sokoban_level_14 "
        #######
  #######     #
  #     # o@o #
@@ -489,7 +489,7 @@ decl -hidden str _sokoban_level_14 "
       ########  #
              ####"
 
-decl -hidden str _sokoban_level_15 "
+declare-option -hidden str _sokoban_level_15 "
    ########
    #   #  #
    #  o   #
@@ -507,7 +507,7 @@ decl -hidden str _sokoban_level_15 "
 ######   #
      #####"
 
-decl -hidden str _sokoban_level_16 "
+declare-option -hidden str _sokoban_level_16 "
 #####
 #   ##
 #    #  ####
@@ -524,7 +524,7 @@ decl -hidden str _sokoban_level_16 "
   #  #
   ####"
 
-decl -hidden str _sokoban_level_17 "
+declare-option -hidden str _sokoban_level_17 "
    ##########
    #..  #   #
    #..      #
@@ -540,7 +540,7 @@ decl -hidden str _sokoban_level_17 "
    #    #
    ######"
 
-decl -hidden str _sokoban_level_18 "
+declare-option -hidden str _sokoban_level_18 "
      ###########
      #  .  #   #
      # #.    @ #
@@ -555,7 +555,7 @@ decl -hidden str _sokoban_level_18 "
   #  ###########  #
   ####         ####"
 
-decl -hidden str _sokoban_level_19 "
+declare-option -hidden str _sokoban_level_19 "
   ######
   #   @####
 ##### o   #
@@ -573,7 +573,7 @@ decl -hidden str _sokoban_level_19 "
 #       #  ## ....#
 ###################"
 
-decl -hidden str _sokoban_level_20 "
+declare-option -hidden str _sokoban_level_20 "
     ##########
 #####        ####
 #     #   o  #@ #
@@ -591,7 +591,7 @@ decl -hidden str _sokoban_level_20 "
    #      ## ######
    ########"
 
-decl -hidden str _sokoban_level_21 "
+declare-option -hidden str _sokoban_level_21 "
 #########
 #       #
 #       ####
@@ -608,7 +608,7 @@ decl -hidden str _sokoban_level_21 "
      ##   #####
       #####"
 
-decl -hidden str _sokoban_level_22 "
+declare-option -hidden str _sokoban_level_22 "
 ######     ####
 #    #######  #####
 #   o#  #  o  #   #
@@ -626,7 +626,7 @@ decl -hidden str _sokoban_level_22 "
 #         #       #
 ###################"
 
-decl -hidden str _sokoban_level_23 "
+declare-option -hidden str _sokoban_level_23 "
     #######
     #  #  ####
 ##### o#o #  ##
@@ -642,7 +642,7 @@ decl -hidden str _sokoban_level_23 "
 ##. ####  #####   #
  ####  ####   #####"
 
-decl -hidden str _sokoban_level_24 "
+declare-option -hidden str _sokoban_level_24 "
 ###############
 #..........  .####
 #..........oo.#  #
@@ -660,7 +660,7 @@ decl -hidden str _sokoban_level_24 "
  # @##  #  #  #
  ##############"
 
-decl -hidden str _sokoban_level_25 "
+declare-option -hidden str _sokoban_level_25 "
 ####
 #  ##############
 #  #   ..#......#
@@ -678,7 +678,7 @@ decl -hidden str _sokoban_level_25 "
 #        #    #   #
 ##########    #####"
 
-decl -hidden str _sokoban_level_26 "
+declare-option -hidden str _sokoban_level_26 "
  #######
  #  #  #####
 ##  #  #...###
@@ -692,7 +692,7 @@ decl -hidden str _sokoban_level_26 "
       #      ##
       ########"
 
-decl -hidden str _sokoban_level_27 "
+declare-option -hidden str _sokoban_level_27 "
  #################
  #...   #    #   ##
 ##.....  o## # #o #
@@ -707,7 +707,7 @@ decl -hidden str _sokoban_level_27 "
  #######  @ ##
        ######"
 
-decl -hidden str _sokoban_level_28 "
+declare-option -hidden str _sokoban_level_28 "
          #####
      #####   #
     ## o  o  ####
@@ -724,7 +724,7 @@ decl -hidden str _sokoban_level_28 "
     ######   #
          #####"
 
-decl -hidden str _sokoban_level_29 "
+declare-option -hidden str _sokoban_level_29 "
 #####
 #   ##
 # o  #########
@@ -739,7 +739,7 @@ decl -hidden str _sokoban_level_29 "
 #  #   #   #   #  #
 ###################"
 
-decl -hidden str _sokoban_level_30 "
+declare-option -hidden str _sokoban_level_30 "
        ###########
        #   #     #
 #####  #     o o #
@@ -755,7 +755,7 @@ decl -hidden str _sokoban_level_30 "
 #####   ######...##
     #####    #####"
 
-decl -hidden str _sokoban_level_31 "
+declare-option -hidden str _sokoban_level_31 "
   ####
   #  #########
  ##  ##  #   #
@@ -773,7 +773,7 @@ decl -hidden str _sokoban_level_31 "
    #...#
    #####"
 
-decl -hidden str _sokoban_level_32 "
+declare-option -hidden str _sokoban_level_32 "
       ####
   #####  #
  ##     o#
@@ -790,7 +790,7 @@ decl -hidden str _sokoban_level_32 "
       #  #
       ####"
 
-decl -hidden str _sokoban_level_33 "
+declare-option -hidden str _sokoban_level_33 "
  ###########
  #     ##  #
  #   o   o #
@@ -807,7 +807,7 @@ decl -hidden str _sokoban_level_33 "
  ##..##    #
   ##########"
 
-decl -hidden str _sokoban_level_34 "
+declare-option -hidden str _sokoban_level_34 "
  #########
  #....   ##
  #.#.#  o ##
@@ -824,7 +824,7 @@ decl -hidden str _sokoban_level_34 "
    #  #####
    ####"
 
-decl -hidden str _sokoban_level_35 "
+declare-option -hidden str _sokoban_level_35 "
 ############ ######
 #   #    # ###....#
 #   oo#   @  .....#
@@ -842,7 +842,7 @@ decl -hidden str _sokoban_level_35 "
  #    # #    #
  ###### ######"
 
-decl -hidden str _sokoban_level_36 "
+declare-option -hidden str _sokoban_level_36 "
             #####
 #####  ######   #
 #   ####  o o o #
@@ -860,7 +860,7 @@ decl -hidden str _sokoban_level_36 "
     #.........#
     ###########"
 
-decl -hidden str _sokoban_level_37 "
+declare-option -hidden str _sokoban_level_37 "
 ###########
 #......   #########
 #......   #  ##   #
@@ -877,7 +877,7 @@ decl -hidden str _sokoban_level_37 "
     #####@#####
         ###"
 
-decl -hidden str _sokoban_level_38 "
+declare-option -hidden str _sokoban_level_38 "
       ####
 ####### @#
 #     o  #
@@ -890,7 +890,7 @@ decl -hidden str _sokoban_level_38 "
  #  #######
  ####"
 
-decl -hidden str _sokoban_level_39 "
+declare-option -hidden str _sokoban_level_39 "
              ######
  #############....#
 ##   ##     ##....#
@@ -908,7 +908,7 @@ decl -hidden str _sokoban_level_39 "
 ######   ###
      #####"
 
-decl -hidden str _sokoban_level_40 "
+declare-option -hidden str _sokoban_level_40 "
     ############
     #          ##
     #  # #oo o  #
@@ -926,7 +926,7 @@ decl -hidden str _sokoban_level_40 "
 #....   #
 #########"
 
-decl -hidden str _sokoban_level_41 "
+declare-option -hidden str _sokoban_level_41 "
            #####
           ##   ##
          ##     #
@@ -943,7 +943,7 @@ decl -hidden str _sokoban_level_41 "
              ##  ##
               ####"
 
-decl -hidden str _sokoban_level_42 "
+declare-option -hidden str _sokoban_level_42 "
      ########
   ####      ######
   #    ## o o   @#
@@ -958,7 +958,7 @@ decl -hidden str _sokoban_level_42 "
   ######   ######
        #####"
 
-decl -hidden str _sokoban_level_43 "
+declare-option -hidden str _sokoban_level_43 "
         #######
     #####  #  ####
     #   #   o    #
@@ -971,7 +971,7 @@ decl -hidden str _sokoban_level_43 "
 ######## ##   #   #
           #########"
 
-decl -hidden str _sokoban_level_44 "
+declare-option -hidden str _sokoban_level_44 "
  #####
  #   #
  # # #######
@@ -988,7 +988,7 @@ decl -hidden str _sokoban_level_44 "
           #       #
           #########"
 
-decl -hidden str _sokoban_level_45 "
+declare-option -hidden str _sokoban_level_45 "
 ##### ####
 #...# #  ####
 #...###  o  #
@@ -1004,7 +1004,7 @@ decl -hidden str _sokoban_level_45 "
 # ##    ####
 ###"
 
-decl -hidden str _sokoban_level_46 "
+declare-option -hidden str _sokoban_level_46 "
 ##########
 #        ####
 # ###### #  ##
@@ -1022,7 +1022,7 @@ decl -hidden str _sokoban_level_46 "
   #.......#
   #########"
 
-decl -hidden str _sokoban_level_47 "
+declare-option -hidden str _sokoban_level_47 "
          ####
  #########  ##
 ##  o      o #####
@@ -1035,7 +1035,7 @@ decl -hidden str _sokoban_level_47 "
   #  #######
   ####"
 
-decl -hidden str _sokoban_level_48 "
+declare-option -hidden str _sokoban_level_48 "
   #########
   #O.O#O.O#
   #.O.O.O.#
@@ -1053,7 +1053,7 @@ decl -hidden str _sokoban_level_48 "
  #  #####  #
  ####   ####"
 
-decl -hidden str _sokoban_level_49 "
+declare-option -hidden str _sokoban_level_49 "
        ####
        #  ##
        #   ##
@@ -1070,7 +1070,7 @@ decl -hidden str _sokoban_level_49 "
        #  ##   #
        #########"
 
-decl -hidden str _sokoban_level_50 "
+declare-option -hidden str _sokoban_level_50 "
       ############
      ##..    #   #
     ##..O o    o #
@@ -1088,7 +1088,7 @@ decl -hidden str _sokoban_level_50 "
   #  #      #    ##
   ####      ######"
 
-decl -hidden str _sokoban_level_51 "
+declare-option -hidden str _sokoban_level_51 "
  #########
  #       #
  # o oo o#
@@ -1102,7 +1102,7 @@ decl -hidden str _sokoban_level_51 "
 #..# #     ###
 #### #######"
 
-decl -hidden str _sokoban_level_52 "
+declare-option -hidden str _sokoban_level_52 "
            ########
            #......#
    ####    #......#
@@ -1121,7 +1121,7 @@ decl -hidden str _sokoban_level_52 "
  #  ###########
  ####"
 
-decl -hidden str _sokoban_level_53 "
+declare-option -hidden str _sokoban_level_53 "
 ##################
 #                ##
 # o#   o ##  o    #
@@ -1135,7 +1135,7 @@ decl -hidden str _sokoban_level_53 "
  ##.#              #
   ##################"
 
-decl -hidden str _sokoban_level_54 "
+declare-option -hidden str _sokoban_level_54 "
 ####################
 #   #    #   #   #@#
 # o      o   o   # #
@@ -1149,7 +1149,7 @@ decl -hidden str _sokoban_level_54 "
 #   #    #   #     #
 ####################"
 
-decl -hidden str _sokoban_level_55 "
+declare-option -hidden str _sokoban_level_55 "
 ####################
 #    @##      #   ##
 #    ##    o    o ##
@@ -1163,7 +1163,7 @@ decl -hidden str _sokoban_level_55 "
 ####         # #  ##
 ####################"
 
-decl -hidden str _sokoban_level_56 "
+declare-option -hidden str _sokoban_level_56 "
 ####################
 #  #  ##    #   @###
 ##    o    # o###  #
@@ -1177,7 +1177,7 @@ decl -hidden str _sokoban_level_56 "
 #      # #    ######
 ####################"
 
-decl -hidden str _sokoban_level_57 "
+declare-option -hidden str _sokoban_level_57 "
 ####################
 #@     ###   #  #  #
 # # #  #  o  o     #
@@ -1191,7 +1191,7 @@ decl -hidden str _sokoban_level_57 "
 #####  #  #  #  #  #
 ####################"
 
-decl -hidden str _sokoban_level_58 "
+declare-option -hidden str _sokoban_level_58 "
 ####################
 ##...   ## #    #  #
 #....         o ## #
@@ -1205,7 +1205,7 @@ decl -hidden str _sokoban_level_58 "
 #    #     #  #   @#
 ####################"
 
-decl -hidden str _sokoban_level_59 "
+declare-option -hidden str _sokoban_level_59 "
 ####################
 #   #  #@# ##  #####
 # # #  o    o  #####
@@ -1219,7 +1219,7 @@ decl -hidden str _sokoban_level_59 "
 ##### #    #  #   ##
 ####################"
 
-decl -hidden str _sokoban_level_60 "
+declare-option -hidden str _sokoban_level_60 "
 ####################
 # #     #          #
 #       o  ## ### ##
@@ -1233,7 +1233,7 @@ decl -hidden str _sokoban_level_60 "
 ##       ###########
 ####################"
 
-decl -hidden str _sokoban_level_61 "
+declare-option -hidden str _sokoban_level_61 "
 ####################
 #     ###..###     #
 # oo  ###..###  o@ #
@@ -1247,7 +1247,7 @@ decl -hidden str _sokoban_level_61 "
 #  #  ##    ##  #  #
 ####################"
 
-decl -hidden str _sokoban_level_62 "
+declare-option -hidden str _sokoban_level_62 "
 ####################
 #    #  # #  #  #  #
 # @# # ## o   o   ##
@@ -1261,7 +1261,7 @@ decl -hidden str _sokoban_level_62 "
 #...###        ##  #
 ####################"
 
-decl -hidden str _sokoban_level_63 "
+declare-option -hidden str _sokoban_level_63 "
 ####################
 #....#       #  #  #
 #....# # o  o      #
@@ -1275,7 +1275,7 @@ decl -hidden str _sokoban_level_63 "
 #     @#     #   # #
 ####################"
 
-decl -hidden str _sokoban_level_64 "
+declare-option -hidden str _sokoban_level_64 "
 ####################
 #....###           #
 #....##### #  #o# ##
@@ -1289,7 +1289,7 @@ decl -hidden str _sokoban_level_64 "
 ########  #  #     #
 ####################"
 
-decl -hidden str _sokoban_level_65 "
+declare-option -hidden str _sokoban_level_65 "
 ####################
 #     #     @#...###
 #     #      ##...##
@@ -1303,7 +1303,7 @@ decl -hidden str _sokoban_level_65 "
 #     #    #  #    #
 ####################"
 
-decl -hidden str _sokoban_level_66 "
+declare-option -hidden str _sokoban_level_66 "
 ####################
 #     #  #...#@    #
 # #       ....#    #
@@ -1317,7 +1317,7 @@ decl -hidden str _sokoban_level_66 "
 #  #    #    #  #  #
 ####################"
 
-decl -hidden str _sokoban_level_67 "
+declare-option -hidden str _sokoban_level_67 "
 ####################
 #####@###.##...##  #
 #####o  ..#...#    #
@@ -1331,7 +1331,7 @@ decl -hidden str _sokoban_level_67 "
 ###    #    #    ###
 ####################"
 
-decl -hidden str _sokoban_level_68 "
+declare-option -hidden str _sokoban_level_68 "
 ####################
 #@     #   #       #
 ## ### ##  #### # ##
@@ -1345,7 +1345,7 @@ decl -hidden str _sokoban_level_68 "
 #.....##        #  #
 ####################"
 
-decl -hidden str _sokoban_level_69 "
+declare-option -hidden str _sokoban_level_69 "
 ####################
 #  #      #   #   ##
 # o# o o ##...o  o #
@@ -1359,7 +1359,7 @@ decl -hidden str _sokoban_level_69 "
 #    #    #@       #
 ####################"
 
-decl -hidden str _sokoban_level_70 "
+declare-option -hidden str _sokoban_level_70 "
 ####################
 #  #  # #    #  #  #
 #   o      o o     #
@@ -1373,7 +1373,7 @@ decl -hidden str _sokoban_level_70 "
 #            #.....#
 ####################"
 
-decl -hidden str _sokoban_level_71 "
+declare-option -hidden str _sokoban_level_71 "
 ####################
 #  #     #  ##    ##
 # o#   o #     ##  #
@@ -1387,7 +1387,7 @@ decl -hidden str _sokoban_level_71 "
 ####   #       #   #
 ####################"
 
-decl -hidden str _sokoban_level_72 "
+declare-option -hidden str _sokoban_level_72 "
 ####################
 #      ....#    ####
 #      ....        #
@@ -1401,7 +1401,7 @@ decl -hidden str _sokoban_level_72 "
 ##       ##   #  ###
 ####################"
 
-decl -hidden str _sokoban_level_73 "
+declare-option -hidden str _sokoban_level_73 "
 ####################
 #        #   #@ #  #
 # oo  #oo# # #  ## #
@@ -1415,7 +1415,7 @@ decl -hidden str _sokoban_level_73 "
 #   #  #     #.....#
 ####################"
 
-decl -hidden str _sokoban_level_74 "
+declare-option -hidden str _sokoban_level_74 "
 ####################
 #     #   #####    #
 ## o  #   ####  o  #
@@ -1429,7 +1429,7 @@ decl -hidden str _sokoban_level_74 "
 # #  #    @#      ##
 ####################"
 
-decl -hidden str _sokoban_level_75 "
+declare-option -hidden str _sokoban_level_75 "
 ####################
 #   #   #    #   #@#
 #   o  o     # o # #
@@ -1443,7 +1443,7 @@ decl -hidden str _sokoban_level_75 "
 #   #   #        # #
 ####################"
 
-decl -hidden str _sokoban_level_76 "
+declare-option -hidden str _sokoban_level_76 "
 ####################
 # # # #   #@##   # #
 #             o    #
@@ -1457,7 +1457,7 @@ decl -hidden str _sokoban_level_76 "
 #   ##   #  #      #
 ####################"
 
-decl -hidden str _sokoban_level_77 "
+declare-option -hidden str _sokoban_level_77 "
 ####################
 #    ##   #    #   #
 #  o  o     ## o   #
@@ -1474,7 +1474,7 @@ decl -hidden str _sokoban_level_77 "
        #  ## ######
        #######"
 
-decl -hidden str _sokoban_level_78 "
+declare-option -hidden str _sokoban_level_78 "
        ###########
        #         #
        #    o o  #
@@ -1488,7 +1488,7 @@ decl -hidden str _sokoban_level_78 "
 #....#      #     #
 ######      #######"
 
-decl -hidden str _sokoban_level_79 "
+declare-option -hidden str _sokoban_level_79 "
 #############
 #           #
 # ### oo    #
@@ -1502,7 +1502,7 @@ decl -hidden str _sokoban_level_79 "
   ###@#############
     ###"
 
-decl -hidden str _sokoban_level_80 "
+declare-option -hidden str _sokoban_level_80 "
   #################
 ###@##         ...#
 #    #         ...#
@@ -1517,7 +1517,7 @@ decl -hidden str _sokoban_level_80 "
 #    #    #
 ###########"
 
-decl -hidden str _sokoban_level_81 "
+declare-option -hidden str _sokoban_level_81 "
               #####
      ##########   #
      #        #   #
@@ -1532,7 +1532,7 @@ decl -hidden str _sokoban_level_81 "
 ###########@##
           ###"
 
-decl -hidden str _sokoban_level_82 "
+declare-option -hidden str _sokoban_level_82 "
     ######
  ####    #
  #    ## #
@@ -1547,7 +1547,7 @@ decl -hidden str _sokoban_level_82 "
  #    #  #
  #########"
 
-decl -hidden str _sokoban_level_83 "
+declare-option -hidden str _sokoban_level_83 "
 ####### #########
 #     # #   ##  #
 # ### # #   o   #
@@ -1562,7 +1562,7 @@ decl -hidden str _sokoban_level_83 "
   #..    #  #   #
   ########  #####"
 
-decl -hidden str _sokoban_level_84 "
+declare-option -hidden str _sokoban_level_84 "
 #######
 #     ##########
 #     #    #  ##
@@ -1576,7 +1576,7 @@ decl -hidden str _sokoban_level_84 "
 #     ##@#  ...#
 ################"
 
-decl -hidden str _sokoban_level_85 "
+declare-option -hidden str _sokoban_level_85 "
 ############
 #      #   ##
 # o  o   #  ######
@@ -1594,7 +1594,7 @@ decl -hidden str _sokoban_level_85 "
 #   #     #       ##
 #####     ##########"
 
-decl -hidden str _sokoban_level_86 "
+declare-option -hidden str _sokoban_level_86 "
 ################
 #       #@ #   #
 # # # # # o  oo#
@@ -1606,7 +1606,7 @@ decl -hidden str _sokoban_level_86 "
 #    # ####
 ######"
 
-decl -hidden str _sokoban_level_87 "
+declare-option -hidden str _sokoban_level_87 "
     #####
  ####   ## #####
  #  o    ###   #
@@ -1622,7 +1622,7 @@ decl -hidden str _sokoban_level_87 "
 #         #....#
 ################"
 
-decl -hidden str _sokoban_level_88 "
+declare-option -hidden str _sokoban_level_88 "
 #############
 #........####
 #...#### #  #####
@@ -1640,7 +1640,7 @@ decl -hidden str _sokoban_level_88 "
  #  #    #
  #########"
 
-decl -hidden str _sokoban_level_89 "
+declare-option -hidden str _sokoban_level_89 "
  ##################
  #   o       ...#.##
  #       ####..... #
@@ -1659,7 +1659,7 @@ decl -hidden str _sokoban_level_89 "
        ###  #
          ####"
 
-decl -hidden str _sokoban_level_90 "
+declare-option -hidden str _sokoban_level_90 "
 ####################
 #..#    #          #
 #.o  o  #oo  o## o##
