@@ -1,0 +1,44 @@
+grepmenu.asciidoc
+=================
+
+The builtin `grep` command allows searching for a pattern through given files
+and directories, but creates a buffer listing all the matched lines. Having
+a buffer created and stay in the buffers list after the results are not
+needed anymore is not always desirable, and interacting with a buffer to
+open another one feels wonky at times.
+
+This script provides with the same functionalities as the builtin `grep`
+command, except it displays matches in an interactive menu instead of a buffer.
+
+Commands
+--------
+
+grepmenu
+~~~~~~~~
+
+The `grepmenu` command takes a pattern that will be searched for in the
+current working directory, and the resulting matches will be displayed in
+a menu. Selecting a candidate from that menu will open the buffer, and set
+the main selection's coordinates to that of the match automatically.
+
+Additional parameters are optional.
+
+All parameters are forwarded directly to the command stored in `grepmenucmd`.
+
+Variables
+---------
+
+grepmenucmd
+~~~~~~~~~~~
+
+Default: `ag --all-text --vimgrep`.
+
+String holding the command to which the `grepmenu` command's parameters will
+be forwarded. The command should expect to receive a search pattern followed
+by optional arbitrary parameters as arguments.
+
+The output of the command should be in the following format:
+
+```
+<filename>:<line>:<column>:<match>
+```
