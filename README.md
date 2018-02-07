@@ -1,7 +1,7 @@
 # kakoune-extra
 
 This repository contains several scripts for the [kakoune]("https://github.com/mawww/kakoune") code editor
-that were not elligible to be merged with the core scripts that kakoune ships with, but still implement
+that were not eligible to be merged with the core scripts that kakoune ships with, but still implement
 useful experimental features or allow highlighting of custom file formats.
 
 Scripts are all fairly well commented, but those whose use require more than a quick sentence in an inlined
