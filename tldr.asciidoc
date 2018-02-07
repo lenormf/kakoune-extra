@@ -1,0 +1,22 @@
+tldr.asciidoc
+=============
+
+Utility that fetches pages from the [tldr](https://github.com/tldr-pages/tldr) documentation.
+
+Pages are not cached, they are fetched every time the `tldr` command is executed.
+
+Commands
+--------
+
+tldr
+~~~~
+
+Open a new scratch buffer containing a TL;DR page in markdown format. The
+first argument is the name of the command whose documentation page is to
+be downloaded. The second argument is optional and automatically detected
+if omitted, but can otherwise be one of the following:
+
+ * osx
+ * linux
+ * sunos
+ * common
