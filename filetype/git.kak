@@ -8,8 +8,8 @@
 # Faces that highlight text that overflows the following limits:
 #   - title: 50 characters
 #   - body: 72 characters
-face GitOverflowTitle yellow
-face GitOverflowBody yellow
+set-face global GitOverflowTitle yellow
+set-face global GitOverflowBody yellow
 
 hook -group git-commit-highlight global WinSetOption filetype=git-(commit|rebase) %{
     add-highlighter window/git-commit-highlight regex "^\h*[^#\s][^\n]{71}([^\n]+)" 1:GitOverflowBody

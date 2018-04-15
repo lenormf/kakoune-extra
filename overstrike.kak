@@ -5,8 +5,8 @@
 
 decl -hidden range-specs overstrike_ranges
 
-face OverstrikeBold default+b
-face OverstrikeUnderline default+u
+set-face global OverstrikeBold default+b
+set-face global OverstrikeUnderline default+u
 
 %sh{
     # https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
@@ -60,10 +60,10 @@ face OverstrikeUnderline default+u
         face_underline=$(ansi_to_face "${LESS_TERMCAP_us}")
 
         if [ -n "${face_bold}" ]; then
-            printf 'face OverstrikeBold "%s"\n' "${face_bold}"
+            printf 'set-face global OverstrikeBold "%s"\n' "${face_bold}"
         fi
         if [ -n "${face_underline}" ]; then
-            printf 'face OverstrikeUnderline "%s"\n' "${face_underline}"
+            printf 'set-face global OverstrikeUnderline "%s"\n' "${face_underline}"
         fi
     fi
 }
