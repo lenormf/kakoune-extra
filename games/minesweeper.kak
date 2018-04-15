@@ -26,16 +26,16 @@ minesweeper %{
         exec jl
     }
 
-    add-highlighter group minesweeper
-    add-highlighter -group minesweeper regex '\d' 0:black,green
-    add-highlighter -group minesweeper regex 'x' 0:black,red
-    add-highlighter -group minesweeper regex '!' 0:black,yellow
+    add-highlighter shared group minesweeper
+    add-highlighter shared/minesweeper regex '\d' 0:black,green
+    add-highlighter shared/minesweeper regex 'x' 0:black,red
+    add-highlighter shared/minesweeper regex '!' 0:black,yellow
     map buffer normal <space> ':minesweeper_check<ret>'
     map buffer normal f ':minesweeper_toggle_flag<ret>'
 }
 
 def -hidden minesweeper_quit %{
-    try %{ remove-highlighter minesweeper       }
+    try %{ remove-highlighter shared/minesweeper       }
     try %{ delete-buffer *minesweeper_solution* }
     try %{ delete-buffer *minesweeper*          }
 }
