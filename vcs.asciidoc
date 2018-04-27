@@ -1,0 +1,43 @@
+vcs.asciidoc
+============
+
+Auto-detect and store the path to the root of the current repository, if any.
+
+When a new buffer is created/opened, the script will try to use the following
+Version Control Systems, on after the other:
+
+* `git`
+* `svn`
+* `hg`
+* `bzr`
+
+As soon as a VCS returns a path, indicating that the current buffer was
+created within a repository, the variable below is set.
+
+Variables
+---------
+
+vcs_root_path
+~~~~~~~~~~~~~
+
+String containing the path to the repository in which the current buffer
+was created. This variable only has a value set in the `buffer` scope.
+
+After the script has been loaded, one could use it in subsequent hooks to
+apply project-wide settings (c.f. example below).
+
+Example
+-------
+
+Adding a `tags` file (for use with the builtin `ctags` support script)
+to the `ctagsfiles` option, on buffer creation:
+
+```sh
+hook global BufCreate .* %{
+    %sh{
+        if [ -e "${kak_opt_vcs_root_path}/tags" ]; then
+            printf 'set-option -add buffer ctagsfiles %%{%s}\n' "${kak_opt_vcs_root_path}/tags"
+        fi
+    }
+}
+```
