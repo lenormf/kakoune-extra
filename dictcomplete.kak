@@ -39,7 +39,7 @@ def -hidden -params 1 dict-complete %{
     }
 }
 
-hook global WinSetOption filetype=(plain|asciidoc|markdown|git-commit) %{
+hook global WinSetOption filetype=(plain|asciidoc|markdown|git-commit|mail) %{
     set window completers "option=dict_completions:%opt{completers}"
     hook -group dictcomplete buffer InsertIdle .* %{
         try %{
