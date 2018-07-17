@@ -49,9 +49,9 @@ syntastic-declare-filetype "cpp" \
     'cppcheck --language=c++ --enable=all --template="{file}:{line}:1: {severity}: {message}" 2>&1' \
     'clang-format'
 
-## FIXME: `dscanner` hasn't been tested
+## FIXME: `dscanner` doesn't allow formatting the output yet
 syntastic-declare-filetype "d" \
-    'dscanner' \
+    'dscanner -S' \
     'dfmt'
 
 ## FIXME: `gometalinter` only takes directories as argument, create a wrapper
@@ -59,8 +59,9 @@ syntastic-declare-filetype "go" \
     'gometalinter' \
     'gofmt -e -s'
 
+## NOTE: ignore all default errors/warnings documented in the man page, plus lines too long (E501)
 syntastic-declare-filetype "python" \
-    'flake8 --filename=* --format="%(path)s:%(row)d:%(col)d: error: %(text)s"' \
+    'flake8 --filename=* --format="%(path)s:%(row)d:%(col)d: error: %(text)s" --ignore=E121,E123,E126,E226,E24,E704,W503,W504,E501' \
     'autopep8 -'
 
 syntastic-declare-filetype "sh" \
