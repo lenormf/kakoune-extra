@@ -3,9 +3,9 @@
 ## Highlight some modeline items to give them a powerline feel
 ##
 
-decl str powerlinesep ""
+declare-option str powerlinesep ""
 
-%sh{
+evaluate-commands %sh{
     case "${kak_opt_colorscheme}" in
         zenburn)
             readonly StatusLineBackground='black'

@@ -17,7 +17,7 @@ The optional platform argument can be one of the following:
   - linux
   - sunos
   - common
-} tldr %{ %sh{
+} tldr %{ evaluate-commands %sh{
     command="$1"
 
     if [ $# -lt 2 ]; then

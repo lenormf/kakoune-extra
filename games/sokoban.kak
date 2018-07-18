@@ -7,15 +7,15 @@
 declare-option -hidden str _sokoban_holes
 
 # Colorize the levels
-add-highlighter shared/ group sokoban
-add-highlighter shared/sokoban regex @ 0:string
-add-highlighter shared/sokoban regex '#' 0:comment
-add-highlighter shared/sokoban regex O 0:variable
+add-highlighter shared/sokoban group
+add-highlighter shared/sokoban/ regex @ 0:string
+add-highlighter shared/sokoban/ regex '#' 0:comment
+add-highlighter shared/sokoban/ regex O 0:variable
 
 define-command -params 1 -docstring %{sokoban <level>: play a game of sokoban on the level passed as parameter
 level is an integer between 1 and 90 included} \
     sokoban %{ eval -save-regs '/"|^@m' %{
-    %sh{
+    evaluate-commands %sh{
         readonly id_level=$(($1))
 
         ## FIXME: find a way to get this variable dynamically
@@ -115,7 +115,7 @@ level is an integer between 1 and 90 included} \
         esac
     }
 
-    %sh{
+    evaluate-commands %sh{
         if [ -z "${kak_reg_m}" ]; then
             printf %s "
                 echo -markup '{Error}No such level: $1!'
@@ -132,7 +132,7 @@ level is an integer between 1 and 90 included} \
             exec \\%s\\.<ret>
             set-option buffer _sokoban_holes %val{selections_desc}
             _sokoban-set-hooks
-            add-highlighter window ref sokoban
+            add-highlighter window/sokoban ref sokoban
             exec /@<ret>
         "
     }

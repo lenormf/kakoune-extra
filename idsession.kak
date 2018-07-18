@@ -3,7 +3,7 @@
 ## Rename newly created sessions to human readable names
 ##
 
-hook global KakBegin .* %{ %sh{
+hook global KakBegin .* %{ evaluate-commands %sh{
     readonly ADJECTIVES="kantian:kaput:kashmiri:katabolic:katari:kayoed:kadenced:kaesarian:kaffeinic:kalcific:kalorific:kancelled:kanicular:kanine:kanonized:kapable:kapillary:karamel:kareful:kasual"
     readonly NAMES="keeper:keg:kernel:kerosene:ketchup:kettle:key:keyboard:keyhole:keynote:kick:kickoff:kid:kilometer:kimono:kingdom:kiosk:kit:kitchen:kite:kitten:klaxon:knife:knight:knockdown:knot:konga:kinesis:kicker:koala:kangaroo:kraken"
 

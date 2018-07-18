@@ -4,5 +4,5 @@
 ##
 
 hook global BufCreate .*/?PKGBUILD %{
-    set buffer filetype sh
+    set-option buffer filetype sh
 }

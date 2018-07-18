@@ -6,20 +6,20 @@
 
 # `fzy-cached` requires `find-parent-file` in `utils.kak`
 
-decl -docstring %{formatted shell command whose output is passed to `fzy` to generate a list of tokens
+declare-option -docstring %{formatted shell command whose output is passed to `fzy` to generate a list of tokens
 Each occurence of the `%s` string will be replaced with the directory to list} \
     str fzy_filesearch_cmd 'ag -g "" "%s"'
-decl -docstring "options passed to `fzy` when listing a directory" \
+declare-option -docstring "options passed to `fzy` when listing a directory" \
     str fzy_options '-l $(tput lines)'
-decl -docstring "name of the cache filename looked for by the `fzy-cached` command" \
+declare-option -docstring "name of the cache filename looked for by the `fzy-cached` command" \
     str fzy_cache_filename 'paths'
 
-decl -hidden str fzy_cache_path
+declare-option -hidden str fzy_cache_path
 
-def -params .. -file-completion \
+define-command -params .. -file-completion \
     -docstring %{fzy [<dirs>]: open a file in the given directories
 If no directories are given then the directory in which the current buffer was saved is used} \
-    fzy %{ %sh{
+    fzy %{ evaluate-commands %sh{
     cmd_multiplexer=""
     if [ -n "${DVTM_CMD_FIFO}" ]; then
         cmd_multiplexer="fzy-dvtm"
@@ -42,7 +42,7 @@ If no directories are given then the directory in which the current buffer was s
     done
 } }
 
-def -params .. -file-completion \
+define-command -params .. -file-completion \
     -docstring %{fzy-cached [<dirs>] open a file in the given cached directories
 If no directories are given then the directory in which the current buffer was saved is used} \
     fzy-cached %{

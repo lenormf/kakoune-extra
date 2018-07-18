@@ -15,18 +15,15 @@ hook global BufCreate .+\.tag %{
 # Highlighters
 # ‾‾‾‾‾‾‾‾‾‾‾‾
 
-add-highlighter shared/ regions riotjs \
-    partial '^\s+<' '$' '' \
-    model '^\s+[^<]' '$' ''
-
-add-highlighter shared/riotjs/model ref javascript
-add-highlighter shared/riotjs/partial ref html
+add-highlighter shared/riotjs regions
+add-highlighter shared/riotjs/partial region '^\s+<' '$' ref html
+add-highlighter shared/riotjs/model region '^\s+[^<]' '$' ref javascript
 
 # Initialization
 # ‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 
 hook global WinSetOption filetype=riotjs %{
-    add-highlighter window ref riotjs
+    add-highlighter window/riotjs ref riotjs
 }
 
 hook global WinSetOption filetype=(?!riotjs).* %{

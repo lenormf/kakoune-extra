@@ -4,10 +4,10 @@
 ##
 
 ## position of the cursor in the buffer, in percent
-decl str modeline_pos_percent
+declare-option str modeline_pos_percent
 
 hook global WinCreate .* %{
-    hook window NormalIdle .* %{ %sh{
+    hook window NormalIdle .* %{ evaluate-commands %sh{
         echo "set window modeline_pos_percent '$(($kak_cursor_line * 100 / $kak_buf_line_count))'"
     } }
 }

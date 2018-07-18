@@ -3,12 +3,12 @@
 ## Overstrike markup parser
 ##
 
-decl -hidden range-specs overstrike_ranges
+declare-option -hidden range-specs overstrike_ranges
 
 set-face global OverstrikeBold default+b
 set-face global OverstrikeUnderline default+u
 
-%sh{
+evaluate-commands %sh{
     # https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
     ansi_index_to_color() {
         case "${1}" in
@@ -68,7 +68,7 @@ set-face global OverstrikeUnderline default+u
     fi
 }
 
-def -hidden overstrike-parse-bold %{
+define-command -hidden overstrike-parse-bold %{
     eval -draft %{
         try %{
             exec '%1s(.\x08).<ret>d<a-m>'
@@ -81,7 +81,7 @@ def -hidden overstrike-parse-bold %{
     }
 }
 
-def overstrike-parse -docstring "Parse the contents of the current buffer and convert the overstrike escapes to ranges" %{
+define-command overstrike-parse -docstring "Parse the contents of the current buffer and convert the overstrike escapes to ranges" %{
     set window overstrike_ranges "%val{timestamp}"
 
     eval -draft %{

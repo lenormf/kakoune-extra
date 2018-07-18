@@ -7,7 +7,7 @@
 ##      abcdef.log abc.txt
 ##
 
-hook global WinDisplay [^*].* %{ %sh{
+hook global WinDisplay [^*].* %{ evaluate-commands %sh{
     if [ ! -e "${kak_buffile}" ]; then
         readonly dir_buffer=$(dirname "${kak_buffile}")
         if [ ! -d "${dir_buffer}" ]; then

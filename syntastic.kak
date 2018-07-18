@@ -3,25 +3,25 @@
 ## Auto lint (and optionally format) your code on write
 ##
 
-decl -docstring "format the buffer on save" \
+declare-option -docstring "format the buffer on save" \
     bool syntastic_autoformat no
 
-def -params 2..3 \
+define-command -params 2..3 \
     -docstring %{syntastic-declare-filetype <filetype> <lintcmd> <formatcmd>: automatically lint and/or format buffers on write} \
-    syntastic-declare-filetype %{ %sh{
+    syntastic-declare-filetype %{ evaluate-commands %sh{
     readonly filetype="$1"
 
     printf 'hook global WinSetOption filetype=%s %%{\n' "${filetype}"
 
     if [ $# -gt 2 ] && [ -n "$3" ]; then
-        printf 'hook buffer BufWritePre "\Q%%val{buffile}" %%{ %%sh{
+        printf 'hook buffer BufWritePre "\Q%%val{buffile}" %%{ eval %%sh{
             if [ "${kak_opt_syntastic_autoformat}" = true ]; then
                 if [ -z "${kak_opt_formatcmd}" ]; then
                     printf "set buffer formatcmd \\"%%s\\"\\\\n" "%s"
                 fi
                 echo format
             fi
-        } }\n' "$(printf %s "$3" | sed -e 's/"/\\\\\\"/g' -e 's/%/\\\\%/g')"
+        } }\n' "$(printf %s "$3" | sed -e 's/\([%"]\)/\1\1/g' -e 's/"/\\"/g')"
     fi
 
     ## FIXME: try isn't the good solution, this has to be executed only once
@@ -31,11 +31,11 @@ def -params 2..3 \
     '
 
     if [ -n "$2" ]; then
-        printf '%%sh{
+        printf 'eval %%sh{
             if [ -z "${kak_opt_lintcmd}" ]; then
                 printf "set window lintcmd \\"%%s\\"\\\\n" "%s"
             fi
-        }\n' "$(printf %s "$2" | sed -e 's/"/\\\\\\"/g' -e 's/%/\\\\%/g')"
+        }\n' "$(printf %s "$2" | sed -e 's/\([%"]\)/\1\1/g' -e 's/"/\\"/g')"
     fi
 
     echo 'lint } }'

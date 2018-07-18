@@ -3,7 +3,7 @@
 ## Highlight package files in an OpenElec file tree
 ##
 
-hook global BufCreate .*/?package\.mk %{ %sh{
+hook global BufCreate .*/?package\.mk %{ evaluate-commands %sh{
     path=$(readlink -f "${kak_buffile}")
     if printf %s "${path}" | grep -q "/packages/"; then
         echo 'set buffer filetype sh'

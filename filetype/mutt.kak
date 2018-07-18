@@ -7,6 +7,6 @@
 # ‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾‾
 
 hook global BufCreate /tmp/mutt-.* %{
-    set buffer filetype mail
+    set-option buffer filetype mail
 }
 

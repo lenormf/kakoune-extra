@@ -5,7 +5,7 @@
 
 declare-option -docstring "path to the root of the current project" str vcs_root_path
 
-hook global BufCreate .* %{ %sh{
+hook global BufCreate .* %{ evaluate-commands %sh{
     for cmd in "git rev-parse --show-toplevel" \
                "svn info | awk '/Working Copy Root Path:/ { print substr($0, 25); }'" \
                "hg root" \

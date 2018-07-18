@@ -2,7 +2,7 @@ declare-option str grepmenucmd "ag --all-text --vimgrep"
 
 define-command -params 1.. -file-completion \
     -docstring %{grepmenu <pattern> [targets]: search one or more targets for a given pattern} \
-    grepmenu %{ %sh{
+    grepmenu %{ evaluate-commands %sh{
         readonly PATTERN="$1"
 
         shift

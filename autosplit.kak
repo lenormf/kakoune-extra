@@ -3,7 +3,7 @@
 ## Split the view according to a predefined layout
 ##
 
-def autosplit -params ..2 -docstring %{
+define-command autosplit -params ..2 -docstring %{
 autosplit [<layout> [<size>]]: split the current view according to the terminal size
 Available layouts:
   - vstack: vertical stack with a left hand side main view
@@ -16,7 +16,7 @@ Available sizes:
   - small
 
 The default layout is `vstack`, and the size is autodetected if unspecified
-    } %{ %sh{
+    } %{ evaluate-commands %sh{
     readonly WIDTH_BASE=70
     readonly HEIGHT_BASE=20
 
