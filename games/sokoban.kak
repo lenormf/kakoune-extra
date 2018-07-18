@@ -265,11 +265,11 @@ define-command -hidden _sokoban-on-move %{ eval -draft %{
 define-command -hidden _sokoban-set-hooks %{
     hook buffer BufClose \*sokoban\* _sokoban-quit
 
-    hook -group sokoban-input buffer NormalKey <left> _sokoban-left
-    hook -group sokoban-input buffer NormalKey <right> _sokoban-right
-    hook -group sokoban-input buffer NormalKey <up> _sokoban-up
-    hook -group sokoban-input buffer NormalKey <down> _sokoban-down
-    hook -group sokoban-input buffer NormalKey (<left>|<right>|<up>|<down>) _sokoban-on-move
+    hook -group sokoban-input buffer NormalKey (<left>|h) _sokoban-left
+    hook -group sokoban-input buffer NormalKey (<right>|l) _sokoban-right
+    hook -group sokoban-input buffer NormalKey (<up>|k) _sokoban-up
+    hook -group sokoban-input buffer NormalKey (<down>|j) _sokoban-down
+    hook -group sokoban-input buffer NormalKey (<left>|<right>|<up>|<down>|[hjkl]) _sokoban-on-move
 }
 
 declare-option -hidden str _sokoban_level_0 "
