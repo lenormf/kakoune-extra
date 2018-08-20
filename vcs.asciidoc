@@ -17,6 +17,16 @@ created within a repository, the variable below is set.
 Variables
 ---------
 
+vcs_name
+~~~~~~~~
+
+String holding the name of the VCS detected. Can be one of:
+
+* `git`
+* `svn`
+* `mercurial`
+* `bazaar`
+
 vcs_root_path
 ~~~~~~~~~~~~~
 
@@ -26,8 +36,11 @@ was created. This variable only has a value set in the `buffer` scope.
 After the script has been loaded, one could use it in subsequent hooks to
 apply project-wide settings (c.f. example below).
 
-Example
--------
+Examples
+--------
+
+Auto-detecting root `tags` files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Adding a `tags` file (for use with the builtin `ctags` support script)
 to the `ctagsfiles` option, on buffer creation:
@@ -40,4 +53,25 @@ hook global BufCreate .* %{
         fi
     }
 }
+```
+
+Highlighting `git` changes
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Highlighting with a flag the lines that were changed, in a buffer, since
+the last `git` commit:
+
+```sh
+hook global WinCreate .* %{ evaluate-commands %sh{
+    if [ -n "${kak_opt_vcs_root_path}" ]; then
+        case "${kak_opt_vcs_name}" in
+            git)
+                echo "
+                    git show-diff
+                    hook global BufWritePost %val{buffile} %{git update-diff}
+                    hook global WinDisplay %val{buffile} %{git update-diff}
+                ";;
+        esac
+    fi
+} }
 ```
