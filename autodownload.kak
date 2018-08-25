@@ -3,12 +3,12 @@
 ## Download a remote file when a URL is used as a buffer name
 ##
 
-decl -docstring "when enabled, the buffer containing the download logs will not be removed" \
+declare-option -docstring "when enabled, the buffer containing the download logs will not be removed" \
     bool autodownload_keep_log no
 
 ## Format of the download string that will be used to fetch the file
 ## Defaults to autodownload_format_wget
-decl -docstring %{formatted shell command used to download a file
+declare-option -docstring %{formatted shell command used to download a file
 The following mustache variables are expanded:
   - {progress}: path to the named pipe to which the download progress is written
   - {output}: path to the output file
@@ -17,15 +17,15 @@ Defaults to the `autodownload_format_wget` format} \
     str autodownload_format
 
 ## Pre-defined formats for different popular download tools
-decl -docstring "default formatted command for the `wget` utility" \
+declare-option -docstring "default formatted command for the `wget` utility" \
     str autodownload_format_wget "wget -o '{progress}' -O '{output}' '{url}'"
-decl -docstring "default formatted command for the `aria2c` utility" \
+declare-option -docstring "default formatted command for the `aria2c` utility" \
     str autodownload_format_aria2 "aria2c -o $(basename '{output}') -d $(dirname '{output}') '{url}' > '{progress}'"
-decl -docstring "default formatted command for the `curl` utility" \
+declare-option -docstring "default formatted command for the `curl` utility" \
     str autodownload_format_curl "curl -o '{output}' '{url}' 2> '{progress}'"
 
 ## Set the default downloader to be wget
-set global autodownload_format %opt{autodownload_format_wget}
+set-option global autodownload_format %opt{autodownload_format_wget}
 
 hook global BufNewFile .* %{
     %sh{ {
