@@ -3,52 +3,71 @@
 ## Dictionary completion based on `aspell` in text-based buffers
 ##
 
-decl -docstring "minimum amount of characters in a word necessary to trigger completion" int dict_min_chars 3
-decl -docstring "language identifier passed to `aspell` when loading a dictionary" str dict_lang "en"
-decl -docstring %{size of the dictionary to load, as per `aspell` conventions:
-  - 10: tiny
-  - 20: really small
-  - 30: small
-  - 40: med-small
-  - 50: med
-  - 60: med-large
-  - 70: large
-  - 80: huge
-  - 90: insane} \
+declare-option -docstring "minimum amount of characters in a word necessary to trigger completion" int dict_min_chars 3
+declare-option -docstring "language identifier passed to `aspell` when loading a dictionary" str dict_lang "en"
+declare-option -docstring %{
+    size of the dictionary to load, as per `aspell` conventions:
+      - 10: tiny
+      - 20: really small
+      - 30: small
+      - 40: med-small
+      - 50: med
+      - 60: med-large
+      - 70: large
+      - 80: huge
+      - 90: insane
+    } \
     int dict_size 30
 
-decl -hidden completions dict_completions
+declare-option -hidden completions dict_completions
 
-def -hidden -params 1 dict-complete %{
-    set buffer dict_completions %sh{
-        export kak_coord_word_x=$((kak_cursor_column - ${#1}))
+define-command -hidden -params 1 dict-complete %{ evaluate-commands %sh{
+    {
+        candidates=$(
+            printf %s "${1}" | aspell -a \
+                                      -l "${kak_opt_dict_lang:-en}" \
+                                      --size "${kak_opt_dict_size:-30}" \
+                | awk -F ", " \
+                      -v y="${kak_cursor_line}" \
+                      -v x="${kak_cursor_column}" \
+                      -v ts="${kak_timestamp}" '
+                    BEGIN {
+                        prefix = y "." x "@" ts
+                        candidates = ""
+                    }
+                    END {
+                        if (length(candidates))
+                            print prefix candidates
+                    }
+                    /^&/ {
+                        sub(/^&[^:]+: /, "", $0)
 
-        printf %s\\n "${1}" | aspell -a -l "${kak_opt_dict_lang:-en}" --size "${kak_opt_dict_size:-30}" \
-            | awk '
-            /^&/ {
-                FS=", "
-                sub(/^&[^:]+: /, "", $0)
-                prefix = ENVIRON["kak_cursor_line"] "." ENVIRON["kak_coord_word_x"] "@" ENVIRON["kak_timestamp"]
+                        for (i = 1; i <= NF; i++) {
+                            gsub(/\|/, "\\|", $i)
+                            gsub("~", "~~", $i)
+                            candidates = candidates " %~" $i "||{value}" $i "~"
+                        }
+                    }
+                ')
 
-                if (NF < 1) exit
-                printf "%s", prefix
-                for (i = 1; i <= NF; i++)
-                    printf ":%s||{value}%s", $i, $i
-            }
-        '
-    }
-}
+        if [ -n "${candidates}" ]; then
+            printf 'set %%{buffer=%s} dict_completions %s' "${kak_buffile}" "${candidates}" | kak -p "${kak_session}"
+        fi
+    } >/dev/null 2>&1 </dev/null &
+} }
 
-hook global WinSetOption filetype=(plain|asciidoc|markdown|git-commit|mail) %{
-    set window completers "option=dict_completions:%opt{completers}"
-    hook -group dictcomplete buffer InsertIdle .* %{
+define-command -docstring %{Enable dictionary-completion for the current buffer} \
+    dict-complete-enable %{
+    set-option window completers option=dict_completions %opt{completers}
+
+    hook -group dict-complete buffer InsertIdle .* %{
         try %{
-            eval -save-regs m %{
-                exec -draft h<a-i>W "<a-k>[^\n]{%opt{dict_min_chars},}<ret>" \"my
-                dict-complete %reg{m}
+            evaluate-commands -draft %{
+                execute-keys h<a-i><a-w> <a-\;> "<a-k>[^\n]{%opt{dict_min_chars},}<ret>"
+                dict-complete %val{selection}
             }
         } catch %{
-            set buffer dict_completions ''
+            set-option buffer dict_completions
         }
     }
 }
