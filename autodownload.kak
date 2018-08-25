@@ -27,8 +27,8 @@ declare-option -docstring "default formatted command for the `curl` utility" \
 ## Set the default downloader to be wget
 set-option global autodownload_format %opt{autodownload_format_wget}
 
-hook global BufNewFile .* %{
-    %sh{ {
+hook global BufNewFile .* %{ evaluate-commands %sh{
+    {
         readonly netproto_url="${kak_bufname}"
         readonly netproto_ext="${netproto_url##*.}"
         readonly netproto_proto="${netproto_url%:*}"
@@ -78,7 +78,7 @@ hook global BufNewFile .* %{
             eval -buffer '${netproto_url}' %{
                 edit! -fifo '${netproto_fifo}' -scroll 'download:${netproto_url}'
                 delete-buffer! '${netproto_url}'
-                hook -group fifo 'buffer=download:${netproto_url}' BufCloseFifo .* %{
+                hook -once 'buffer=download:${netproto_url}' BufCloseFifo .* %{
                     nop %sh{
                         if command -v atool >/dev/null; then
                             case \"${netproto_ext}\" in
@@ -91,9 +91,9 @@ hook global BufNewFile .* %{
                         fi
                     }
                     edit '${buffer_basename}'
-                    exec -no-hooks '%d!cat \"${netproto_buffer}\"<ret>d'
+                    exec '%d!cat \"${netproto_buffer}\"<ret>d'
 
-                    %sh{
+                    evaluate-commands %sh{
                         rm -rf '${path_dir_tmp}'
                         if [ '${kak_opt_autodownload_keep_log,,}' != true ]; then
                             printf %s '
@@ -102,7 +102,6 @@ hook global BufNewFile .* %{
                             '
                         fi
                     }
-                    rmhooks buffer fifo
                 }
             }
         " | kak -p "${kak_session}"
