@@ -37,12 +37,12 @@ hook global BufNewFile .* %{ evaluate-commands %sh{
         command -v "${kak_opt_autodownload_format%% *}" >/dev/null || exit
 
         ## Check that a url was passed to kakoune
-        if ! expr "${netproto_url}" : '[a-zA-Z][a-zA-Z]*://.' >/dev/null; then
+        if ! printf %s "${netproto_url}" | grep -q '^[a-zA-Z][a-zA-Z]*://.' >/dev/null; then
             exit
         fi
 
         ## Create a temporary directory in which we will download the file
-        readonly path_dir_tmp=$(mktemp -d -t kak-proto.XXXXXXXX)
+        readonly path_dir_tmp=$(mktemp -d "${TMPDIR:-/tmp}"/kak-autodownload.XXXXXXXX)
         if [ -z "${path_dir_tmp}" ]; then
             echo "echo -debug Unable to create temporary directory" | kak -p "${kak_session}"
             exit 2
@@ -83,7 +83,7 @@ hook global BufNewFile .* %{ evaluate-commands %sh{
                         if command -v atool >/dev/null; then
                             case \"${netproto_ext}\" in
                                 zip|rar|lha|lzh|7z|alz|ace|arj|arc|gz|bz|bz2|Z|lzma|lzo|lz|xz|rz|lrz|7z|cpio)
-                                    readonly path_tmp_file=\$(mktemp kak-extract.XXXXXXXX)
+                                    readonly path_tmp_file=\$(mktemp \"\${TMPDIR:-/tmp}\"/kak-autodownload.XXXXXXXX)
                                     atool -F \"${netproto_ext}\" -X \"\${path_tmp_file}\" \"${netproto_buffer}\" 2>/dev/null
                                     mv \"\${path_tmp_file}\" \"${netproto_buffer}\"
                                 ;;
@@ -95,7 +95,7 @@ hook global BufNewFile .* %{ evaluate-commands %sh{
 
                     evaluate-commands %sh{
                         rm -rf '${path_dir_tmp}'
-                        if [ '${kak_opt_autodownload_keep_log,,}' != true ]; then
+                        if [ '${kak_opt_autodownload_keep_log}' != true ]; then
                             printf %s '
                                 delete-buffer! 'download:${netproto_url}'
                                 buffer '${buffer_basename}'
@@ -106,5 +106,4 @@ hook global BufNewFile .* %{ evaluate-commands %sh{
             }
         " | kak -p "${kak_session}"
     } 2>&1 >/dev/null </dev/null &
-    }
-}
+} }
