@@ -10,7 +10,7 @@ hook global WinCreate .* %{
     hook window NormalIdle .* %{ evaluate-commands %sh{
         branch=$(cd "$(dirname "$(readlink -e "${kak_buffile}")")" && git rev-parse --abbrev-ref HEAD 2>/dev/null)
         if [ -n "${branch}" ]; then
-            echo "set window modeline_git_branch '${branch}'"
+            echo "set window modeline_git_branch '${branch}'"
         fi
     } }
 }
