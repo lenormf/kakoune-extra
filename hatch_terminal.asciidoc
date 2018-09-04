@@ -1,5 +1,5 @@
-hatch_terminal.asciidoc
-=======================
+hatch_terminal.kak
+==================
 
 This script allows spawning a shell or an arbitrary command in a new window, exporting information about the current session in the environment.
 

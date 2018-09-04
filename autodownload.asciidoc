@@ -1,5 +1,5 @@
-autodownload.asciidoc
-=====================
+autodownload.kak
+================
 
 This script allows the editor to automatically download and display the file pointed to by URLs.
 

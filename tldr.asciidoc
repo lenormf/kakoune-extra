@@ -1,5 +1,5 @@
-tldr.asciidoc
-=============
+tldr.kak
+========
 
 Utility that fetches pages from the [tldr](https://github.com/tldr-pages/tldr) documentation.
 

@@ -1,5 +1,5 @@
-overstrike.asciidoc
-===================
+overstrike.kak
+==============
 
 This module allows overstrike formatted contents to be rendered by Kakoune in a buffer.
 

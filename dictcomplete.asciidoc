@@ -1,5 +1,5 @@
-dictcomplete.asciidoc
-=====================
+dictcomplete.kak
+================
 
 This script enables completion using a dictionary in buffers that
 usually contain lots of plain text (e.g. `asciidoc`). After a certain

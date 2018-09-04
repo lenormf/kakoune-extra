@@ -1,5 +1,5 @@
-autosplit.asciidoc
-==================
+autosplit.kak
+=============
 
 The goal of this script is to allow spawning several clients in a
 predefined layout to simply setting up a semi-integrated development environment.
