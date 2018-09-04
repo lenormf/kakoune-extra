@@ -1,0 +1,44 @@
+searchmarks.kak
+===============
+
+The `search-marks` command allows showing how many matches each line holds,
+after a search was performed.
+
+Commands
+--------
+
+search-marks
+~~~~~~~~~~~~
+
+Interfacing command that takes a search primitive as first argument, which
+can be any of the builtin primitives (`/`, `<a-/>` etc), or a custom mapping
+declared by the user.
+
+The command prompts the user for a pattern, which will be passed to
+the search primitive upon validation of the prompt, and a `flag-lines`
+highlighter added to the current window.
+
+If no matches result from the search, the highlighter is removed from
+the window.
+
+Faces
+-----
+
+SearchMark
+~~~~~~~~~~
+
+Face applied to the line flags that indicate the amount of matches on the line.
+
+Example
+-------
+
+The following mappings override the builtin search primitives to use the
+markers command interface:
+
+
+```
+map -docstring 'search with markers' global normal '/' %{: search-marks /<ret>}
+map -docstring 'backward search with markers' global normal '<a-/>' %{: search-marks <lt>a-/><ret>}
+map -docstring 'extend search with markers' global normal '?' %{: search-marks ?<ret>}
+map -docstring 'backward extend search with markers' global normal '<a-?>' %{: search-marks <lt>a-?><ret>}
+```
