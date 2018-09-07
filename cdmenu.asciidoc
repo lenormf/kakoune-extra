@@ -1,0 +1,55 @@
+cdmenu.kak
+==========
+
+Spawn a menu that allows jumping to a pre-determined directory.
+
+Commands
+--------
+
+cdmenu
+~~~~~~
+
+The `cdmenu` command, without any parameter passed to it, displays a menu
+showing all the available "indexes" that can be used to jump to a given
+directory. Indexes are simply the key that needs to be hit in order for
+the jump to be made (it's a simple custom user mode).
+
+A supported index can also be passed to the command directly, in which case
+no menu will be displayed.
+
+Options
+-------
+
+cdmenu_paths
+~~~~~~~~~~~~
+
+This option is a string map whose keys are the indexes used to perform the
+jump, and containing values formatted as follows:
+
+```
+documentation string:path
+```
+
+Due to the way parsing is performed, *documentation string* may contain colon
+`:` characters.
+
+The *path* part can be a simple UNIX path, e.g. `/tmp`, but it can also be
+a bit of shell code that will be evaluated at the time of jump. Paths
+that need be evaluated dynamically have to be surrounded by backtick `\``
+characters.
+
+Example:
+
+```
+set-option global str-to-str-map cdmenu_paths "g=git root:`git rev-parse --show-toplevel`"
+```
+
+Upon calling `:cdmenu g` (or hitting the `g` index if calling `:cdmenu`
+without arguments), the `git` command will be executed, returning the path
+that should be jumped to.
+
+Note that, due to an implementation restriction on shell scopes, in order for
+`$kak_*` environment variables to be expanded by `:cdmenu`, the variable's
+name should be hardcoded in the implementation of `:cdmenu`. The command's
+definition already uses that mechanism for `kak_client_env_HOME`, you can
+add your own expansions after it.
