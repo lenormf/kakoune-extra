@@ -1,7 +1,7 @@
 cdmenu.kak
 ==========
 
-Spawn a menu that allows jumping to a pre-determined directory.
+Spawn a menu that allows jumping to a predetermined directory.
 
 Commands
 --------
@@ -35,13 +35,13 @@ Due to the way parsing is performed, *documentation string* may contain colon
 
 The *path* part can be a simple UNIX path, e.g. `/tmp`, but it can also be
 a bit of shell code that will be evaluated at the time of jump. Paths
-that need be evaluated dynamically have to be surrounded by backtick `\``
+that need be evaluated dynamically have to be surrounded by backtick ```
 characters.
 
 Example:
 
 ```
-set-option global str-to-str-map cdmenu_paths "g=git root:`git rev-parse --show-toplevel`"
+set-option global cdmenu_paths "g=git root:`git rev-parse --show-toplevel`"
 ```
 
 Upon calling `:cdmenu g` (or hitting the `g` index if calling `:cdmenu`
