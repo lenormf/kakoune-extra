@@ -12,6 +12,6 @@ set-face global GitOverflowTitle yellow
 set-face global GitOverflowBody yellow
 
 hook -group git-commit-highlight global WinSetOption filetype=git-(commit|rebase) %{
-    add-highlighter window/git-commit-highlight regex "^\h*[^#\s][^\n]{71}([^\n]+)" 1:GitOverflowBody
-    add-highlighter window/git-commit-highlight regex "\A[\s\n]*[^#\s][^\n]{49}([^\n]+)" 1:GitOverflowTitle
+    add-highlighter window/git-commit-highlight/ regex "^\h*[^#\s][^\n]{71}([^\n]+)" 1:GitOverflowBody
+    add-highlighter window/git-commit-highlight/ regex "\A[\s\n]*[^#\s][^\n]{49}([^\n]+)" 1:GitOverflowTitle
 }
