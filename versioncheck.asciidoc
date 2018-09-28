@@ -1,0 +1,22 @@
+versioncheck.kak
+================
+
+When the editor starts, a hook fetches the version number of the latest
+stable release on Github, and compares it with the local version of the
+running instance.
+
+The state of the comparison is printed on the debug buffer, along with
+context information: whether the local instance is up to date, its version,
+the upstream stable version etc.
+
+A development version is always considered up-to-date with its associated
+stable, e.g. `v2018.09.04-65-gdbfed130` is considered aligned with
+`v2018.09.04`.
+
+Example output:
+
+```
+Local version: v2018.09.04-65-gdbfed130
+Upstream version: v2018.09.04
+Up to date
+```
