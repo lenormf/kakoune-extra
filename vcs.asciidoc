@@ -69,6 +69,7 @@ hook global WinCreate .* %{ evaluate-commands %sh{
                 echo "
                     git show-diff
                     hook global BufWritePost %val{buffile} %{git update-diff}
+                    hook global BufReload %val{buffile} %{git update-diff}
                     hook global WinDisplay %val{buffile} %{git update-diff}
                 ";;
         esac
