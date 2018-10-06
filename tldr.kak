@@ -7,7 +7,7 @@ define-command -hidden -params 2 tldr-open %{
     execute-keys \%d "!curl -sL '%opt{tldr_page_url}/%arg{2}/%arg{1}.md'<ret>"
 }
 
-define-command -params 1..2 -shell-candidates %{
+define-command -params 1..2 -shell-script-candidates %{
     curl -sL "${kak_opt_tldr_index_url}" | jq -r '.commands[] | .name'
 } -docstring %{
 tldr <command> [platform]: open a new buffer with a TL;DR for the given command
