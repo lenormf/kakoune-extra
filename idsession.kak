@@ -3,30 +3,34 @@
 ## Rename newly created sessions to human readable names
 ##
 
-hook global KakBegin .* %{ evaluate-commands %sh{
-    readonly ADJECTIVES="kantian:kaput:kashmiri:katabolic:katari:kayoed:kadenced:kaesarian:kaffeinic:kalcific:kalorific:kancelled:kanicular:kanine:kanonized:kapable:kapillary:karamel:kareful:kasual"
-    readonly NAMES="keeper:keg:kernel:kerosene:ketchup:kettle:key:keyboard:keyhole:keynote:kick:kickoff:kid:kilometer:kimono:kingdom:kiosk:kit:kitchen:kite:kitten:klaxon:knife:knight:knockdown:knot:konga:kinesis:kicker:koala:kangaroo:kraken"
+declare-option -docstring "list of adjectives used to make up a session name" str-list idsession_adjectives \
+    "kantian" "kaput" "kashmiri" "katabolic" "katari" "kayoed" "kadenced" "kaesarian" "kaffeinic" "kalcific" "kalorific" "kancelled" "kanicular" "kanine" "kanonized" "kapable" "kapillary" "karamel" "kareful" "kasual"
+declare-option -docstring "list of adjectives used to make up a session name" str-list idsession_nouns \
+    "keeper" "keg" "kernel" "kerosene" "ketchup" "kettle" "key" "keyboard" "keyhole" "keynote" "kick" "kickoff" "kid" "kilometer" "kimono" "kingdom" "kiosk" "kit" "kitchen" "kite" "kitten" "klaxon" "knife" "knight" "knockdown" "knot" "konga" "kinesis" "kicker" "koala" "kangaroo" "kraken"
 
-    rnd() {
-        seed=$(($$ * $(date +%s)))
-        echo | awk "{srand(${seed}); n=rand(); sub(/0\\./, //, n); print n;}"
-    }
+define-command -docstring %{Set the session name to a human-readable composed word
 
-    select_list_idx() {
-        idx=$(($1 + 1))
-        shift
+The current session name will be used as a seed, and is expected to be a number (default)} \
+    idsession %{ evaluate-commands %sh{
+    seed="${kak_session}"
 
-        eval "printf %s \${${idx}}"
-    }
+    eval set -- "${kak_opt_idsession_adjectives}"
 
-    nb_adj=$(printf %s "${ADJECTIVES}" | tr ':' '\n' | wc -l)
-    nb_names=$(printf %s "${NAMES}" | tr ':' '\n' | wc -l)
+    if [ $# -lt 1 ]; then
+        exit 1
+    fi
 
-    idx_adj=$(($(rnd) % nb_adj))
-    idx_name=$(($(rnd) % nb_names))
+    n=$((seed % $# + 1))
+    name_session=$(eval "printf %s \${${n}}")
 
-    adj=$(select_list_idx ${idx_adj} $(printf %s "${ADJECTIVES}" | tr ':' ' '))
-    name=$(select_list_idx ${idx_name} $(printf %s "${NAMES}" | tr ':' ' '))
+    eval set -- "${kak_opt_idsession_nouns}"
 
-    printf 'rename-session %s-%s' "${adj}" "${name}"
+    if [ $# -lt 1 ]; then
+        exit 1
+    fi
+
+    n=$((seed % $# + 1))
+    name_session="${name_session}-"$(eval "printf %s \${${n}}")
+
+    printf 'rename-session "%s"' $(printf %s "${name_session}" | sed 's/"/""/g')
 } }

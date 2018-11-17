@@ -1,9 +1,48 @@
 idsession.kak
 =============
 
-Kakoune assigns the process ID of the server as session name, which
-makes it moderatly difficult to make a difference from several active sessions on the session.
-This script automatically renames the current session with a more human friendly format: an adjective and a name.
+The default name for a new session is the process ID of the server,
+which makes it difficult to differenciate one session from another. The
+`idsession` command fixes that by renaming the current session into a name
+that's human-readable (hyphen separated adjective/noun pair).
 
-The adjective and the name are selected pseudo-randomly, which should avoid collisions, but not
-necessarily guarantee they won't happen.
+Commands
+--------
+
+idsession
+~~~~~~~~~
+
+Rename the current session. The current session name is expected to be a
+number to use as a seed, which is the case in a new session (the process
+ID of the server is the session name). If the session name is not a number,
+`0` will be used as a seed.
+
+The seed is subsequently used to pick an adjective and a noun that will
+make up the resulting session name. The selection is a simple modulo,
+which makes the outcome of this function deterministic for the same seed.
+
+To automatically rename new sessions, call this command from a hook:
+
+```
+hook global KakBegin .* idsession
+```
+
+Variables
+---------
+
+idsession_adjectives
+~~~~~~~~~~~~~~~~~~~~
+
+List of adjectives that will make up the first part of the adjective/noun
+pair.
+
+The default list of adjectives contain words that start with the letter
+`k`, e.g. "katari".
+
+idsession_names
+~~~~~~~~~~~~~~~
+
+List of nouns that will make up the second part of the adjective/noun pair.
+
+The default list of nouns contain words that start with the letter `k`,
+e.g. "kettle".
