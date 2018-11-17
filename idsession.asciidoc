@@ -2,7 +2,7 @@ idsession.kak
 =============
 
 The default name for a new session is the process ID of the server,
-which makes it difficult to differenciate one session from another. The
+which makes it difficult to differentiate one session from another. The
 `idsession` command fixes that by renaming the current session into a name
 that's human-readable (hyphen separated adjective/noun pair).
 
