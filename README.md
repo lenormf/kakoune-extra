@@ -1,3 +1,16 @@
+# Archived
+
+This repository is not being maintained any more, and doesn't accept further
+user contributions.
+
+The highlighters have been moved to the
+[kakoune-extra-filetypes](https://github.com/kakoune-editor/kakoune-extra-filetypes)
+repository, which is bigger, maintained and accept user contributions.
+
+Commands remain here for the sake of posterity. Feel free to
+grave dig any files and make them work with more recent version of
+[kakoune]("https://github.com/mawww/kakoune").
+
 # kakoune-extra
 
 This repository contains several scripts for the
